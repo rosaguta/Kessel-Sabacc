@@ -74,18 +74,15 @@ private:
     }
 
 public:
-    NumberCard cards[2];
-    // TODO: Refactor the array above to 2 seperate cards
-    // because you always have 1 of each family in hand
     NumberCard bloodCard;
     NumberCard sandCard;
     int specialCards;
-    int shiftTokens;
+    std::vector<ShiftToken> shiftTokens;
     int chips;
     Player()
     {
         specialCards = 0;
-        shiftTokens = 0;
+        shiftTokens = std::vector<ShiftToken>(FREE_DRAW, GENERAL_AUDIT, MARKDOWN);
         chips = 0;
     }
 
@@ -93,16 +90,16 @@ public:
     {
         cout << "==The current hand is== \r\n";
         cout << "Cards:\r\n";
-        for (int i = 0; i < 2; i++)
-        {
-            cout << "  " << getCardFamilyName(cards[i].cardFamily)
-                 << "  " << getNumberName(cards[i].number)
-                 << "\n";
-        }
-        cout << "Other unimplemented values:\r\n";
-        cout << "  Special cards: " << specialCards << "\n";
-        cout << "  Shift tokens:  " << shiftTokens << "\n";
-        cout << "  Chips:         " << chips << "\n";
+        cout << "  " << getCardFamilyName(bloodCard.cardFamily)
+             << "\t" << getNumberName(bloodCard.number)
+             << "\n";
+        cout << "  " << getCardFamilyName(sandCard.cardFamily)
+             << "\t" << getNumberName(sandCard.number)
+             << "\n";
+        // cout << "Other unimplemented values:\r\n";
+        // cout << "  Special cards: " << specialCards << "\n";
+        // cout << "  Shift tokens:  " << shiftTokens << "\n";
+        // cout << "  Chips:         " << chips << "\n";
     }
 };
 class Dealer
@@ -157,8 +154,8 @@ public:
 
         for (Player &player : players)
         {
-            player.cards[0] = bloodNumberCards.at(bloodIndex++);
-            player.cards[1] = sandNumberCards.at(sandIndex++);
+            player.bloodCard = bloodNumberCards.at(bloodIndex++);
+            player.sandCard = sandNumberCards.at(sandIndex++);
         }
     }
 };
@@ -174,15 +171,10 @@ int main()
     dealer.AddParticipant(player3);
     dealer.AddParticipant(player4);
     dealer.DealCards();
-
-    // Player player1;
-    // Player player2;
-    // cout << "====HAND ONE====\r\n";
-    // player1.printCurrentHand();
-    // cout << "====HAND ONE====\r\n";
-    // cout << "====HAND TWO====\r\n";
-    // player2.printCurrentHand();
-    // cout << "====HAND TWO====\r\n";
+    for (Player &player : dealer.players)
+    {
+        player.printCurrentHand();
+    }
 
     return 0;
 };
