@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <array>
+#include <algorithm>
 using namespace std;
 #define MAX_PLAYERCOUNT 4
 enum Number
@@ -74,6 +75,10 @@ private:
 
 public:
     NumberCard cards[2];
+    // TODO: Refactor the array above to 2 seperate cards
+    // because you always have 1 of each family in hand
+    NumberCard bloodCard;
+    NumberCard sandCard;
     int specialCards;
     int shiftTokens;
     int chips;
@@ -136,11 +141,26 @@ public:
             cout << "A player could not be added because the table is full\r\n";
             return false;
         }
-
         players.push_back(player);
         return true;
     }
-    
+    void DealCards()
+    {
+        std::random_device rd;
+        std::mt19937 generator(rd());
+
+        std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(), generator);
+        std::shuffle(sandNumberCards.begin(), sandNumberCards.end(), generator);
+
+        size_t bloodIndex = 0;
+        size_t sandIndex = 0;
+
+        for (Player &player : players)
+        {
+            player.cards[0] = bloodNumberCards.at(bloodIndex++);
+            player.cards[1] = sandNumberCards.at(sandIndex++);
+        }
+    }
 };
 int main()
 {
@@ -153,6 +173,7 @@ int main()
     dealer.AddParticipant(player2);
     dealer.AddParticipant(player3);
     dealer.AddParticipant(player4);
+    dealer.DealCards();
 
     // Player player1;
     // Player player2;
