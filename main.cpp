@@ -34,7 +34,7 @@ enum ShiftToken
     GENERAL_AUDIT,
     MAJOR_FRAUD
 };
-class Hand
+class Player
 {
 private:
     string getCardFamilyName(CardFamily family)
@@ -76,7 +76,7 @@ public:
     int specialCards;
     int shiftTokens;
     int chips;
-    Hand()
+    Player()
     {
         generateNumberCards();
         specialCards = 0;
@@ -113,15 +113,20 @@ public:
         cout << "  Chips:         " << chips << "\n";
     }
 };
+class Dealer{
+    public:
+        int currentPlayerTurn;
+        NumberCard numberCards[36]
+};
 int main()
 {
-    Hand hand1;
-    Hand hand2;
+    Player player1;
+    Player player2;
     cout << "====HAND ONE====\r\n";
-    hand1.printCurrentHand();
+    player1.printCurrentHand();
     cout << "====HAND ONE====\r\n";
     cout << "====HAND TWO====\r\n";
-    hand2.printCurrentHand();
+    player2.printCurrentHand();
     cout << "====HAND TWO====\r\n";
     
     return 0;
