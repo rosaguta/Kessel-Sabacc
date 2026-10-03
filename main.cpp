@@ -82,7 +82,7 @@ public:
     Player()
     {
         specialCards = 0;
-        shiftTokens = std::vector<ShiftToken>(FREE_DRAW, GENERAL_AUDIT, MARKDOWN);
+        shiftTokens = std::vector<ShiftToken>{FREE_DRAW, GENERAL_AUDIT, MARKDOWN};
         chips = 0;
     }
 
