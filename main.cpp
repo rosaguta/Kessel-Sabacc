@@ -2,7 +2,7 @@
 #include <random>
 #include <array>
 using namespace std;
-
+#define MAX_PLAYERCOUNT 4
 enum Number
 {
     ONE = 1,
@@ -79,23 +79,9 @@ public:
     int chips;
     Player()
     {
-        generateNumberCards();
         specialCards = 0;
         shiftTokens = 0;
         chips = 0;
-    }
-    void generateNumberCards()
-    {
-        random_device rd;
-        mt19937 gen(rd());
-
-        uniform_int_distribution<int> familyDist(0, 1);
-        uniform_int_distribution<int> numberDist(1, 6);
-        for (int i = 0; i < 2; i++)
-        {
-            cards[i].cardFamily = CardFamily(familyDist(gen));
-            cards[i].number = Number(numberDist(gen));
-        }
     }
 
     void printCurrentHand()
@@ -116,21 +102,8 @@ public:
 };
 class Dealer
 {
-public:
-    int currentPlayerTurn;
-    std::array<NumberCard, 18> bloodNumberCards;
-    std::array<NumberCard, 18> sandNumberCards;
-
-    int imposterCards = 6;
-    int sylopCards = 2;
-    Dealer()
-    {
-        GenerateCards(bloodNumberCards, CardFamily::BLOOD);
-        GenerateCards(sandNumberCards, CardFamily::SAND);
-    }
-
 private:
-    void GenerateCards(std::array<NumberCard, 18>& cards, CardFamily family)
+    void GenerateCards(std::array<NumberCard, 18> &cards, CardFamily family)
     {
         int count = 0;
         for (int i = 0; i < 3; i++)
@@ -143,10 +116,43 @@ private:
             };
         }
     }
+
+public:
+    int currentPlayerTurn;
+    std::array<NumberCard, 18> bloodNumberCards;
+    std::array<NumberCard, 18> sandNumberCards;
+    std::vector<Player> players;
+    int imposterCards = 6;
+    int sylopCards = 2;
+    Dealer()
+    {
+        GenerateCards(bloodNumberCards, CardFamily::BLOOD);
+        GenerateCards(sandNumberCards, CardFamily::SAND);
+    }
+    bool AddParticipant(const Player &player)
+    {
+        if (players.size() >= MAX_PLAYERCOUNT)
+        {
+            cout << "A player could not be added because the table is full\r\n";
+            return false;
+        }
+
+        players.push_back(player);
+        return true;
+    }
+    
 };
 int main()
 {
+    Player player1;
+    Player player2;
+    Player player3;
+    Player player4;
     Dealer dealer;
+    dealer.AddParticipant(player1);
+    dealer.AddParticipant(player2);
+    dealer.AddParticipant(player3);
+    dealer.AddParticipant(player4);
 
     // Player player1;
     // Player player2;
