@@ -77,13 +77,14 @@ public:
     NumberCard bloodCard;
     NumberCard sandCard;
     int specialCards;
+    // TODO: the player must define the shift token before the game starts.
     std::vector<ShiftToken> shiftTokens;
     int chips;
     Player()
     {
         specialCards = 0;
         shiftTokens = std::vector<ShiftToken>{FREE_DRAW, GENERAL_AUDIT, MARKDOWN};
-        chips = 0;
+        chips = 8;
     }
 
     void printCurrentHand()
@@ -96,9 +97,15 @@ public:
         cout << "  " << getCardFamilyName(sandCard.cardFamily)
              << "\t" << getNumberName(sandCard.number)
              << "\n";
+        cout << "  Shift tokens:  ";
+        for (const auto &token : shiftTokens)
+        {
+            cout << token << " ";
+        }
+        cout << "\n";
+
         // cout << "Other unimplemented values:\r\n";
         // cout << "  Special cards: " << specialCards << "\n";
-        // cout << "  Shift tokens:  " << shiftTokens << "\n";
         // cout << "  Chips:         " << chips << "\n";
     }
 };
