@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <array>
 using namespace std;
 
 enum Number
@@ -113,21 +114,48 @@ public:
         cout << "  Chips:         " << chips << "\n";
     }
 };
-class Dealer{
-    public:
-        int currentPlayerTurn;
-        NumberCard numberCards[36]
+class Dealer
+{
+public:
+    int currentPlayerTurn;
+    std::array<NumberCard, 18> bloodNumberCards;
+    std::array<NumberCard, 18> sandNumberCards;
+
+    int imposterCards = 6;
+    int sylopCards = 2;
+    Dealer()
+    {
+        GenerateCards(bloodNumberCards, CardFamily::BLOOD);
+        GenerateCards(sandNumberCards, CardFamily::SAND);
+    }
+
+private:
+    void GenerateCards(std::array<NumberCard, 18>& cards, CardFamily family)
+    {
+        int count = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 1; j < 7; j++)
+            {
+                cards[count].cardFamily = family;
+                cards[count].number = static_cast<Number>(j);
+                count++;
+            };
+        }
+    }
 };
 int main()
 {
-    Player player1;
-    Player player2;
-    cout << "====HAND ONE====\r\n";
-    player1.printCurrentHand();
-    cout << "====HAND ONE====\r\n";
-    cout << "====HAND TWO====\r\n";
-    player2.printCurrentHand();
-    cout << "====HAND TWO====\r\n";
-    
+    Dealer dealer;
+
+    // Player player1;
+    // Player player2;
+    // cout << "====HAND ONE====\r\n";
+    // player1.printCurrentHand();
+    // cout << "====HAND ONE====\r\n";
+    // cout << "====HAND TWO====\r\n";
+    // player2.printCurrentHand();
+    // cout << "====HAND TWO====\r\n";
+
     return 0;
-}
+};
