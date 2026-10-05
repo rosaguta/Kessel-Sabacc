@@ -3,7 +3,9 @@
 #include <array>
 #include <algorithm>
 using namespace std;
-#define MAX_PLAYERCOUNT 4
+/* This is a hard max count because kessel sabac in Star Wars Outlaws only shows a game with max 4 people.
+This game is based on the gameplay shown in the video game*/
+#define MAX_PLAYERCOUNT 4 
 enum Number
 {
     ONE = 1,
