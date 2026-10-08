@@ -17,8 +17,8 @@ private:
     std::string getNumberName(Number number);
 
 public:
-    NumberCard bloodCard;
-    NumberCard sandCard;
+    NumberCard bloodCard{};
+    NumberCard sandCard{};
 
     int specialCards;
     std::vector<ShiftToken> shiftTokens;
