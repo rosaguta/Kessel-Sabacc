@@ -155,9 +155,6 @@ public:
         std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(), generator);
         std::shuffle(sandNumberCards.begin(), sandNumberCards.end(), generator);
 
-        size_t bloodIndex = 0;
-        size_t sandIndex = 0;
-
         for (Player& player : players)
         {
             player.bloodCard = bloodNumberCards.back();
