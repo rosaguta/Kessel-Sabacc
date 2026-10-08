@@ -114,24 +114,21 @@ public:
 class Dealer
 {
 private:
-    void GenerateCards(std::array<NumberCard, 18> &cards, CardFamily family)
+    void GenerateCards(std::vector<NumberCard> &cards, CardFamily family)
     {
-        int count = 0;
         for (int i = 0; i < 3; i++)
         {
             for (int j = 1; j < 7; j++)
             {
-                cards[count].cardFamily = family;
-                cards[count].number = static_cast<Number>(j);
-                count++;
+                cards.push_back({family, static_cast<Number>(j)});
             };
         }
     }
 
 public:
     int currentPlayerTurn;
-    std::array<NumberCard, 18> bloodNumberCards;
-    std::array<NumberCard, 18> sandNumberCards;
+    std::vector<NumberCard> bloodNumberCards;
+    std::vector<NumberCard> sandNumberCards;
     std::vector<Player> players;
     int imposterCards = 6;
     int sylopCards = 2;
@@ -161,10 +158,13 @@ public:
         size_t bloodIndex = 0;
         size_t sandIndex = 0;
 
-        for (Player &player : players)
+        for (Player& player : players)
         {
-            player.bloodCard = bloodNumberCards.at(bloodIndex++);
-            player.sandCard = sandNumberCards.at(sandIndex++);
+            player.bloodCard = bloodNumberCards.back();
+            bloodNumberCards.pop_back();
+
+            player.sandCard = sandNumberCards.back();
+            sandNumberCards.pop_back();
         }
     }
 };
