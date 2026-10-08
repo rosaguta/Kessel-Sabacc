@@ -8,6 +8,7 @@ void Dealer::GenerateCards(
     std::vector<NumberCard>& cards,
     CardFamily family)
 {
+    int currentNumber = 0;
     for (int i = 0; i < 3; i++)
     {
         for (int j = 1; j < 7; j++)
@@ -56,5 +57,10 @@ bool Dealer::DealCards()
         player.sandCard = sandNumberCards.back();
         sandNumberCards.pop_back();
     }
+    this->faceUpBloodCard = bloodNumberCards.back();
+    bloodNumberCards.pop_back();
+    this->faceUpSandCard = sandNumberCards.back();
+    sandNumberCards.pop_back();
+
     return true;
 }

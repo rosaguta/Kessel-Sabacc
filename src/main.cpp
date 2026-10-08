@@ -16,12 +16,12 @@ int main()
     dealer.AddParticipant(player4);
 
     Game game;
-    game.Preparation(dealer&);
-
+    game.Preparation(&dealer);
     for (Player& player : dealer.players)
     {
         player.printCurrentHand();
     }
+
 
     return 0;
 }
