@@ -23,6 +23,8 @@ public:
 
     std::vector<NumberCard> bloodNumberCards;
     std::vector<NumberCard> sandNumberCards;
+    NumberCard faceUpBloodCard;
+    NumberCard faceUpSandCard;
 
     std::vector<Player> players;
 
