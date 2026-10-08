@@ -1,5 +1,6 @@
 #include "Dealer.h"
 #include "Player.h"
+#include "Game.h"
 int main()
 {
     Player player1;
@@ -14,7 +15,8 @@ int main()
     dealer.AddParticipant(player3);
     dealer.AddParticipant(player4);
 
-    dealer.DealCards();
+    Game game;
+    game.Preparation(dealer&);
 
     for (Player& player : dealer.players)
     {

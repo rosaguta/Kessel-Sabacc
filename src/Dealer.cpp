@@ -39,23 +39,14 @@ bool Dealer::AddParticipant(const Player& player)
     players.push_back(player);
     return true;
 }
-
-void Dealer::DealCards()
+//TODO: add return false when the cards couldnt be shuffled/dealt
+bool Dealer::DealCards()
 {
     std::random_device rd;
     std::mt19937 generator(rd());
 
-    std::shuffle(
-        bloodNumberCards.begin(),
-        bloodNumberCards.end(),
-        generator
-    );
-
-    std::shuffle(
-        sandNumberCards.begin(),
-        sandNumberCards.end(),
-        generator
-    );
+    std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(),generator);
+    std::shuffle(sandNumberCards.begin(), sandNumberCards.end(),generator);
 
     for (Player& player : players)
     {
@@ -65,4 +56,5 @@ void Dealer::DealCards()
         player.sandCard = sandNumberCards.back();
         sandNumberCards.pop_back();
     }
+    return true;
 }

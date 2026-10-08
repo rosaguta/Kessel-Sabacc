@@ -34,7 +34,7 @@ public:
     Dealer();
 
     bool AddParticipant(const Player& player);
-    void DealCards();
+    bool DealCards();
 };
 
 #endif //KESSEL_SABACC_DEALER_H

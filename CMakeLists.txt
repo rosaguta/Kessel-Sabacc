@@ -8,6 +8,8 @@ add_executable(Kessel_Sabacc
         src/main.cpp
         src/Dealer.cpp
         src/Player.cpp
+        src/Game.cpp
+        include/Game.h
 )
 
 target_include_directories(Kessel_Sabacc PRIVATE
