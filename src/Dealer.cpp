@@ -40,6 +40,16 @@ bool Dealer::AddParticipant(const Player& player)
     players.push_back(player);
     return true;
 }
+
+bool Dealer::Reset() {
+    bloodNumberCards.clear();
+    sandNumberCards.clear();
+    GenerateCards(bloodNumberCards, CardFamily::BLOOD);
+    GenerateCards(sandNumberCards, CardFamily::SAND);
+    this->DealCards();
+    return true;
+}
+
 //TODO: add return false when the cards couldnt be shuffled/dealt
 bool Dealer::DealCards()
 {
