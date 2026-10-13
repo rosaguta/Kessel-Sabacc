@@ -20,7 +20,7 @@ void RenderTerminal(const Game& game, const Dealer& dealer) {
     std::cout << "========================================\n";
 }
 
-PlayerAction GetTerminalInput(int activePlayerId) {
+PlayerAction GetTerminalInput(int activePlayerId, Dealer& dealer) {
     std::cout << "Choose Action:\n";
     std::cout << "1. Stand\n2. Draw Blood Deck\n3. Draw Blood Discard\n"
               << "4. Draw Sand Deck\n5. Draw Sand Discard\n> ";
@@ -33,9 +33,9 @@ PlayerAction GetTerminalInput(int activePlayerId) {
     switch (choice) {
         case 1: action.type = ActionType::STAND; break;
         case 2: action.type = ActionType::DRAW_BLOOD_DECK; break;
-        case 3: action.type = ActionType::DRAW_BLOOD_DISCARD; break;
+        case 3: action.type = ActionType::DRAW_BLOOD_DISCARD; action.card = dealer.players[activePlayerId].bloodCard; break;
         case 4: action.type = ActionType::DRAW_SAND_DECK; break;
-        case 5: action.type = ActionType::DRAW_SAND_DISCARD; break;
+        case 5: action.type = ActionType::DRAW_SAND_DISCARD; action.card = dealer.players[activePlayerId].sandCard; break;
         default: action.type = ActionType::STAND; break;
     }
     return action;
@@ -58,10 +58,6 @@ int main()
 
     Game game;
     bool prepped = game.Prepare(&dealer);
-    // for (Player& player : dealer.players)
-    // {
-    //     player.printCurrentHand();
-    // }
     if(prepped == false) {
         return 1;
     }
@@ -69,7 +65,7 @@ int main()
         RenderTerminal(game, dealer);
 
         if (game.currentPhase == GamePhase::AWAITING_PLAYER_ACTION) {
-            PlayerAction action = GetTerminalInput(game.activePlayerIndex);
+            PlayerAction action = GetTerminalInput(game.activePlayerIndex, dealer);
             game.ApplyAction(action, dealer);
             game.activePlayerIndex++;
             if (game.activePlayerIndex > dealer.players.size() - 1) {

@@ -87,10 +87,14 @@ bool Dealer::DrawSandCard(int playerIndex) {
     return true;
 }
 
-bool Dealer::DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer) {
+bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer) {
+    players[playerIndex].bloodCard = faceUpBloodCard;
+    faceUpBloodCard = cardFromPlayer;
     return true;
 }
 
-bool Dealer::DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer) {
+bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer) {
+    players[playerIndex].sandCard = faceUpBloodCard;
+    faceUpSandCard = cardFromPlayer;
     return true;
 }
