@@ -16,8 +16,6 @@ private:
         std::vector<NumberCard>& cards,
         CardFamily family
     );
-    bool DrawCard(int playerIndex, ActionType actionType);
-
 public:
     int currentPlayerTurn{};
 
