@@ -27,7 +27,8 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
 }
 
 void Game::ResolveEndOfRound(Dealer &dealer) {
-
+    //TODO: reset game state and advance to next round
+    RoundNumber++;
 }
 
 bool Game::IsGameOver() const {

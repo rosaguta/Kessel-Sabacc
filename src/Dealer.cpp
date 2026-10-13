@@ -20,7 +20,7 @@ void Dealer::GenerateCards(
         }
     }
 }
-
+//TODO: need to have a method that generates the cards when the round ends/starts
 Dealer::Dealer()
 {
     GenerateCards(bloodNumberCards, CardFamily::BLOOD);
