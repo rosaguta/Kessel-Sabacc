@@ -2,7 +2,7 @@
 #define KESSEL_SABACC_CARDS_H
 
 #pragma once
-
+#include <string>
 enum Number
 {
     ONE = 1,
@@ -23,6 +23,9 @@ struct NumberCard
 {
     CardFamily cardFamily;
     Number number;
+    std::string ToString() const {
+        return std::to_string(static_cast<int>(number));
+    }
 };
 
 #endif //KESSEL_SABACC_CARDS_H

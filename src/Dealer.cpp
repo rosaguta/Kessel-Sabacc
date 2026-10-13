@@ -64,3 +64,23 @@ bool Dealer::DealCards()
 
     return true;
 }
+
+bool Dealer::DrawBloodCard(int playerIndex) {
+    players[playerIndex].bloodCard = bloodNumberCards.back();
+    bloodNumberCards.pop_back();
+    return true;
+}
+
+bool Dealer::DrawSandCard(int playerIndex) {
+    players[playerIndex].sandCard = sandNumberCards.back();
+    sandNumberCards.pop_back();
+    return true;
+}
+
+bool Dealer::DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer) {
+    return true;
+}
+
+bool Dealer::DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer) {
+    return true;
+}

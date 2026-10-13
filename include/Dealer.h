@@ -5,7 +5,6 @@
 #pragma once
 
 #include <vector>
-
 #include "Player.h"
 
 #define MAX_PLAYERCOUNT 4
@@ -17,6 +16,7 @@ private:
         std::vector<NumberCard>& cards,
         CardFamily family
     );
+    bool DrawCard(int playerIndex, ActionType actionType);
 
 public:
     int currentPlayerTurn{};
@@ -35,6 +35,10 @@ public:
 
     bool AddParticipant(const Player& player);
     bool DealCards();
+    bool DrawBloodCard(int playerIndex);
+    bool DrawSandCard(int playerIndex);
+    bool DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer);
+    bool DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer);
 };
 
 #endif //KESSEL_SABACC_DEALER_H

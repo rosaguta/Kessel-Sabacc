@@ -29,5 +29,19 @@ public:
     void printCurrentHand();
 };
 
+enum class ActionType {
+    STAND,
+    DRAW_BLOOD_DECK,
+    DRAW_BLOOD_DISCARD,
+    DRAW_SAND_DECK,
+    DRAW_SAND_DISCARD,
+    USE_TOKEN,
+};
+
+struct PlayerAction {
+    int playerId;
+    ActionType type;
+    NumberCard card;
+};
 
 #endif //KESSEL_SABACC_PLAYER_H
