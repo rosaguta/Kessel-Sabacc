@@ -20,8 +20,10 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
             return true;
             break;
         case ActionType::STAND:
+            return true;
             break;
         default:
+            return true;
             break;
     }
 }
