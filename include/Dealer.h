@@ -32,6 +32,7 @@ public:
     Dealer();
 
     bool AddParticipant(const Player& player);
+    bool Reset();
     bool DealCards();
     bool DrawBloodCard(int playerIndex);
     bool DrawSandCard(int playerIndex);
