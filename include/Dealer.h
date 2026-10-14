@@ -9,13 +9,13 @@
 
 #define MAX_PLAYERCOUNT 4
 
-class Dealer
-{
+class Dealer {
 private:
     static void GenerateCards(
-        std::vector<NumberCard>& cards,
+        std::vector<NumberCard> &cards,
         CardFamily family
     );
+
     bool HandleShiftFreeDrawToken(int playerIndex); // Avoid the draw fee this turn
     bool HandleShiftRefundToken(int playerIndex); // Retrieve 2 chips in play
     bool HandleShiftExtraRefundToken(int playerIndex); // Retrieve 3 chips in play
@@ -49,14 +49,22 @@ public:
 
     Dealer();
 
-    bool AddParticipant(const Player& player);
+    bool AddParticipant(const Player &player);
+
     bool Reset();
+
     bool DealCards();
-    bool DrawBloodCard(int playerIndex);
-    bool DrawSandCard(int playerIndex);
-    bool DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer);
-    bool DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer);
+
+    bool DrawBloodCard(int playerIndex, bool drawFee = true);
+
+    bool DrawSandCard(int playerIndex, bool drawFee = true);
+
+    bool DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer, bool drawFee = true);
+
+    bool DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer, bool drawFee = true);
+
     bool RemovePlayer(int playerIndex);
+
     bool HandleShiftToken(int playerIndex, ShiftToken shift_token, int targetPlayerIndex);
 };
 

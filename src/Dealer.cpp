@@ -21,6 +21,7 @@ void Dealer::GenerateCards(
 }
 
 bool Dealer::HandleShiftFreeDrawToken(int playerIndex) {
+
 }
 
 bool Dealer::HandleShiftRefundToken(int playerIndex) {
@@ -121,32 +122,52 @@ bool Dealer::DealCards()
 
     return true;
 }
-
-bool Dealer::DrawBloodCard(int playerIndex) {
+// returns false if the player doesnt have enough chips
+bool Dealer::DrawBloodCard(int playerIndex, bool drawFee) {
+    if (drawFee){
+        players[playerIndex].chips--;
+    }
+    if (players[playerIndex].chips <= 0) {
+        return false;
+    }
     players[playerIndex].bloodCard = bloodNumberCards.back();
     bloodNumberCards.pop_back();
-    players[playerIndex].chips--;
     return true;
 }
-
-bool Dealer::DrawSandCard(int playerIndex) {
+// returns false if the player doesnt have enough chips
+bool Dealer::DrawSandCard(int playerIndex, bool drawFee) {
+    if (drawFee){
+        players[playerIndex].chips--;
+    }
+    if (players[playerIndex].chips <= 0) {
+        return false;
+    }
     players[playerIndex].sandCard = sandNumberCards.back();
     sandNumberCards.pop_back();
-    players[playerIndex].chips--;
     return true;
 }
-
-bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer) {
+// returns false if the player doesnt have enough chips
+bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer, bool drawFee) {
+    if (drawFee){
+        players[playerIndex].chips--;
+    }
+    if (players[playerIndex].chips <= 0) {
+        return false;
+    }
     players[playerIndex].bloodCard = faceUpBloodCard;
     faceUpBloodCard = cardFromPlayer;
-    players[playerIndex].chips--;
     return true;
 }
-
-bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer) {
+// returns false if the player doesnt have enough chips
+bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer, bool drawFee) {
+    if (drawFee){
+        players[playerIndex].chips--;
+    }
+    if (players[playerIndex].chips <= 0) {
+        return false;
+    }
     players[playerIndex].sandCard = faceUpBloodCard;
     faceUpSandCard = cardFromPlayer;
-    players[playerIndex].chips--;
     return true;
 }
 
