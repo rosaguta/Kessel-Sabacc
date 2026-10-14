@@ -78,6 +78,7 @@ int main() {
     if (prepped == false) {
         return 1;
     }
+    //TODO: update the game loop
     while (!game.IsGameOver()) {
         RenderTerminal(game, dealer);
 
