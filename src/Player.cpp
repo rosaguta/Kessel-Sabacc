@@ -1,10 +1,8 @@
 #include "Player.h"
 #include <iostream>
 
-std::string Player::getCardFamilyName(CardFamily family)
-{
-    switch (family)
-    {
+std::string Player::getCardFamilyName(CardFamily family) {
+    switch (family) {
         case SAND:
             return "Sand";
 
@@ -16,10 +14,8 @@ std::string Player::getCardFamilyName(CardFamily family)
     }
 }
 
-std::string Player::getNumberName(Number number)
-{
-    switch (number)
-    {
+std::string Player::getNumberName(Number number) {
+    switch (number) {
         case ONE:
             return "One";
 
@@ -43,38 +39,35 @@ std::string Player::getNumberName(Number number)
     }
 }
 
-Player::Player()
-{
+Player::Player() {
     specialCards = 0;
     shiftTokens = {
         FREE_DRAW,
         GENERAL_AUDIT,
         MARKDOWN
     };
-    chips = 8;
+    chips = 2;
 }
 
-void Player::printCurrentHand()
-{
+void Player::printCurrentHand() {
     std::cout << "==The current hand is==\r\n";
     std::cout << "Cards:\r\n";
 
     std::cout << "  "
-              << getCardFamilyName(bloodCard.cardFamily)
-              << "\t"
-              << getNumberName(bloodCard.number)
-              << "\n";
+            << getCardFamilyName(bloodCard.cardFamily)
+            << "\t"
+            << getNumberName(bloodCard.number)
+            << "\n";
 
     std::cout << "  "
-              << getCardFamilyName(sandCard.cardFamily)
-              << "\t"
-              << getNumberName(sandCard.number)
-              << "\n";
+            << getCardFamilyName(sandCard.cardFamily)
+            << "\t"
+            << getNumberName(sandCard.number)
+            << "\n";
 
     std::cout << "  Shift tokens: ";
 
-    for (const auto& token : shiftTokens)
-    {
+    for (const auto &token: shiftTokens) {
         std::cout << token << " ";
     }
 
