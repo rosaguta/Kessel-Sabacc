@@ -20,6 +20,7 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
             return true;
             break;
         case ActionType::STAND:
+            // no action is being performed when a user decides to stand
             return true;
             break;
         default:
