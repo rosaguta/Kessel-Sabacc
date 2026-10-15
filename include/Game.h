@@ -11,6 +11,10 @@ enum class GamePhase {
 class Game {
     bool GameFinished = false;
     bool RoundFinished = false;
+    void EvaluateRound(Dealer &dealer);
+
+    int RollDice();
+
 public:
     GamePhase currentPhase = GamePhase::AWAITING_PLAYER_ACTION;
     int currentRound = 1;
