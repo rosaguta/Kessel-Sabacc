@@ -1,6 +1,11 @@
 #include "Game.h"
+#include <array>
+#include <random>
+
 #include "Dealer.h"
 #include "Player.h"
+
+
 
 bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
     switch (action.type) {
@@ -30,11 +35,32 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
 }
 
 void Game::ResolveEndOfRound(Dealer &dealer) {
+    EvaluateRound(dealer);
     currentRound++;
     currentPhase = GamePhase::AWAITING_PLAYER_ACTION;
     currentTurn = 1;
     activePlayerIndex = 0;
     dealer.Reset();
+}
+void Game::EvaluateRound(Dealer &dealer) {
+    std::vector<std::array<NumberCard, 2>> playerHands;
+
+    playerHands.reserve(dealer.players.size());
+    for (const auto& player : dealer.players) {
+        if ()
+        playerHands.push_back({
+            player.bloodCard,
+            player.sandCard
+        });
+    }
+
+    playerHands.shrink_to_fit();
+}
+int Game::RollDice() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(1 , 6);
+    return distr(gen);
 }
 
 bool Game::IsGameOver() const {
