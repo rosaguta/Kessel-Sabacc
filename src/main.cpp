@@ -11,13 +11,13 @@ void RenderTerminal(const Game &game, const Dealer &dealer) {
     std::cout << "Remaining blood cards: " << dealer.bloodNumberCards.size() << " | Remaining sand cards: " << dealer.
             sandNumberCards.size() << "\n";
 
-    std::cout << "Face-up Blood: " << dealer.faceUpBloodCard.ToString()
-            << " | Face-up Sand: " << dealer.faceUpSandCard.ToString();
+    std::cout << "Face-up: " << dealer.faceUpBloodCard.ToString()
+            << " | Face-up: " << dealer.faceUpSandCard.ToString();
     std::cout << "\n================Player===================\n";
     const Player &current = dealer.players[game.activePlayerIndex];
     std::cout << "Active Player: " << game.activePlayerIndex << "\n";
-    std::cout << "Hand: Blood[" << current.bloodCard.ToString() << "] Sand["
-            << current.sandCard.ToString() << "]\n";
+    std::cout << "Hand: " << current.bloodCard.ToString() << " | "
+            << current.sandCard.ToString() << "\n";
     std::cout << "Chips: " << current.chips << "\n";
     std::cout << "========================================\n";
 }
@@ -80,22 +80,23 @@ int main() {
     }
     //TODO: update the game loop
     while (!game.IsGameOver()) {
-        RenderTerminal(game, dealer);
-
-        if (game.currentPhase == GamePhase::AWAITING_PLAYER_ACTION) {
-            if (game.activePlayerIndex > dealer.players.size() - 1) {
-                game.currentTurn++;
-                game.activePlayerIndex = 0;
-            }
-            if (game.currentTurn > 3) {
-                game.currentPhase = GamePhase::ROUND_END;
-            }
-        } else if (game.currentPhase == GamePhase::ROUND_END) {
+        if (game.currentTurn > 3) {
+            game.currentPhase = GamePhase::ROUND_END;
+        }
+        if (game.currentPhase == GamePhase::ROUND_END) {
             game.ResolveEndOfRound(dealer);
         }
-        PlayerAction action = GetTerminalInput(game.activePlayerIndex, dealer);
-        game.ApplyAction(action, dealer);
-        game.activePlayerIndex++;
+        if (game.activePlayerIndex > dealer.players.size() - 1) {
+            game.currentTurn++;
+            game.activePlayerIndex = 0;
+        }
+        RenderTerminal(game, dealer);
+        if (game.currentPhase == GamePhase::AWAITING_PLAYER_ACTION) {
+            PlayerAction action = GetTerminalInput(game.activePlayerIndex, dealer);
+            game.ApplyAction(action, dealer);
+            game.activePlayerIndex++;
+        }
+
     }
     return 0;
 }
