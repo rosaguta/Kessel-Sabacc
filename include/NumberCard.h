@@ -10,7 +10,16 @@ enum Number
     THREE = 3,
     FOUR = 4,
     FIVE = 5,
-    SIX = 6
+    SIX = 6,
+    IMPOSTOR,
+    IMPOSTOR_1,
+    IMPOSTOR_2,
+    IMPOSTOR_3,
+    IMPOSTOR_4,
+    IMPOSTOR_5,
+    IMPOSTOR_6,
+    SYLOP,
+
 };
 
 enum CardFamily
@@ -24,7 +33,80 @@ struct NumberCard
     CardFamily cardFamily;
     Number number;
     std::string ToString() const {
-        return std::to_string(static_cast<int>(number));
+        std::string familyName;
+        std::string nmr;
+        switch (cardFamily) {
+            case SAND:
+                familyName = "SAND";
+                break;
+            case BLOOD:
+                familyName = "BLOOD";
+                break;
+            default:
+                familyName = "Unknown";
+                break;
+        }
+        switch (number) {
+            case ONE:
+                nmr = "1";
+                break;
+
+            case TWO:
+                nmr = "2";
+                break;
+
+            case THREE:
+                nmr = "3";
+                break;
+
+            case FOUR:
+                nmr = "4";
+                break;
+
+            case FIVE:
+                nmr = "5";
+                break;
+
+            case SIX:
+                nmr = "6";
+                break;
+
+            case IMPOSTOR:
+                nmr = "Impostor";
+                break;
+
+            case IMPOSTOR_1:
+                nmr = "Impostor(1)";
+                break;
+
+            case IMPOSTOR_2:
+                nmr = "Impostor(2)";
+                break;
+
+            case IMPOSTOR_3:
+                nmr = "Impostor(3)";
+                break;
+
+            case IMPOSTOR_4:
+                nmr = "Impostor(4)";
+                break;
+
+            case IMPOSTOR_5:
+                nmr = "Impostor(5)";
+                break;
+
+            case IMPOSTOR_6:
+                nmr = "Impostor(6)";
+                break;
+
+            case SYLOP:
+                nmr = "Sylop";
+                break;
+
+            default:
+                nmr = "Unknown";
+        }
+        return familyName + "[" + nmr + "]";
     }
 };
 
