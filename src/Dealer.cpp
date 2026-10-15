@@ -17,7 +17,15 @@ void Dealer::GenerateCards(
                 static_cast<Number>(j)
             });
         }
+        cards.push_back({
+            family,
+            IMPOSTOR
+        });
     }
+    cards.push_back({
+        family,
+        SYLOP
+    });
 }
 
 bool Dealer::HandleShiftFreeDrawToken(int playerIndex) {
