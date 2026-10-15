@@ -34,6 +34,12 @@ std::string Player::getNumberName(Number number) {
         case SIX:
             return "Six";
 
+        case IMPOSTOR:
+            return "Impostor";
+
+        case SYLOP:
+            return "Sylop";
+
         default:
             return "Unknown";
     }
