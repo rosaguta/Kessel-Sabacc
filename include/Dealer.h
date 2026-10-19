@@ -55,6 +55,8 @@ public:
 
     bool DealCards();
 
+    bool PlayerCanSpendChips(int playerIndex, bool drawFee = true);
+
     bool DrawBloodCard(int playerIndex, bool drawFee = true);
 
     bool DrawSandCard(int playerIndex, bool drawFee = true);

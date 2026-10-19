@@ -107,8 +107,7 @@ bool Dealer::Reset() {
 }
 
 //TODO: add return false when the cards couldnt be shuffled/dealt
-bool Dealer::DealCards()
-{
+bool Dealer::DealCards() {
     std::random_device rd;
     std::mt19937 generator(rd());
 
@@ -131,51 +130,59 @@ bool Dealer::DealCards()
     return true;
 }
 // returns false if the player doesnt have enough chips
+//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawBloodCard(int playerIndex, bool drawFee) {
-    if (drawFee){
-        players[playerIndex].chips--;
-    }
-    if (players[playerIndex].chips <= 0) {
+    if (players[playerIndex].chips <= 0 && drawFee) {
         return false;
+    }
+    if (drawFee){
+        players[playerIndex].SpendChips();
     }
     players[playerIndex].bloodCard = bloodNumberCards.back();
     bloodNumberCards.pop_back();
+    players[playerIndex].EvaluateMatchingPair();
     return true;
 }
 // returns false if the player doesnt have enough chips
+//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawSandCard(int playerIndex, bool drawFee) {
-    if (drawFee){
-        players[playerIndex].chips--;
-    }
-    if (players[playerIndex].chips <= 0) {
+    if (players[playerIndex].chips <= 0 && drawFee) {
         return false;
+    }
+    if (drawFee){
+        players[playerIndex].SpendChips();
     }
     players[playerIndex].sandCard = sandNumberCards.back();
     sandNumberCards.pop_back();
+    players[playerIndex].EvaluateMatchingPair();
     return true;
 }
 // returns false if the player doesnt have enough chips
+//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer, bool drawFee) {
-    if (drawFee){
-        players[playerIndex].chips--;
-    }
-    if (players[playerIndex].chips <= 0) {
+    if (players[playerIndex].chips <= 0 && drawFee) {
         return false;
+    }
+    if (drawFee){
+        players[playerIndex].SpendChips();
     }
     players[playerIndex].bloodCard = faceUpBloodCard;
     faceUpBloodCard = cardFromPlayer;
+    players[playerIndex].EvaluateMatchingPair();
     return true;
 }
 // returns false if the player doesnt have enough chips
+//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer, bool drawFee) {
-    if (drawFee){
-        players[playerIndex].chips--;
-    }
-    if (players[playerIndex].chips <= 0) {
+    if (players[playerIndex].chips <= 0 && drawFee) {
         return false;
+    }
+    if (drawFee){
+        players[playerIndex].SpendChips();
     }
     players[playerIndex].sandCard = faceUpBloodCard;
     faceUpSandCard = cardFromPlayer;
+    players[playerIndex].EvaluateMatchingPair();
     return true;
 }
 
