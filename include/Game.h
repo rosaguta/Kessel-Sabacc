@@ -12,6 +12,11 @@ class Game {
     bool GameFinished = false;
     bool RoundFinished = false;
     void EvaluateRound(Dealer &dealer);
+    bool MatchingPairExist(Dealer &dealer);
+
+    static int ResolveMatchingPairWinner(Dealer &dealer);
+
+    static int ResolveNonMatchingPairWinner(Dealer &dealer);
 
     int RollDice();
 
@@ -22,6 +27,8 @@ public:
     int activePlayerIndex = 0;
     bool ApplyAction(const PlayerAction& action, Dealer& dealer);
     void ResolveEndOfRound(Dealer& dealer);
+
+
     bool IsGameOver() const;
     bool Prepare(Dealer* dealer);
 };

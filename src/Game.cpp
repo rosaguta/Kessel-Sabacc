@@ -1,7 +1,7 @@
 #include "Game.h"
-#include <array>
+#include <iostream>
+#include <ostream>
 #include <random>
-
 #include "Dealer.h"
 #include "Player.h"
 
@@ -42,19 +42,58 @@ void Game::ResolveEndOfRound(Dealer &dealer) {
     activePlayerIndex = 0;
     dealer.Reset();
 }
-void Game::EvaluateRound(Dealer &dealer) {
-    std::vector<std::array<NumberCard, 2>> playerHands;
-
-    playerHands.reserve(dealer.players.size());
+bool Game::MatchingPairExist(Dealer &dealer) {
+    bool pairFound = false;
     for (const auto& player : dealer.players) {
-        if ()
-        playerHands.push_back({
-            player.bloodCard,
-            player.sandCard
-        });
+        if (player.matchingPair) {
+            pairFound = true;
+            break;
+        }
     }
+    return pairFound;
+}
+// returns playerIndex of the winner
+int Game::ResolveMatchingPairWinner(Dealer &dealer) {
+    int winningPlayerIndex = -1;
 
-    playerHands.shrink_to_fit();
+    for (int i = 0; i < dealer.players.size(); i++) {
+        const auto& currentPlayer = dealer.players[i];
+        if (!currentPlayer.matchingPair) {
+            continue;
+        }
+        if (winningPlayerIndex == -1 || currentPlayer.bloodCard.number < dealer.players[winningPlayerIndex].bloodCard.number)
+        {
+            winningPlayerIndex = i;
+        }
+    }
+    return winningPlayerIndex;
+}
+// returns playerIndex of the winner
+int Game::ResolveNonMatchingPairWinner(Dealer &dealer) {
+    int winningPlayerIndex = -1;
+    int lowestDifference = INT_MAX;
+    for (int i = 0; i < dealer.players.size(); i++) {
+        const auto& currentPlayer = dealer.players[i];
+        int difference = std::abs(static_cast<int>(currentPlayer.bloodCard.number) - static_cast<int>(currentPlayer.sandCard.number));
+
+        if (difference < lowestDifference) {
+            lowestDifference = difference;
+            winningPlayerIndex = i;
+        }
+    }
+    return winningPlayerIndex;
+}
+void Game::EvaluateRound(Dealer &dealer) {
+    int winner;
+    bool matchingPair = MatchingPairExist(dealer);
+    if (matchingPair) {
+        winner = ResolveMatchingPairWinner(dealer);
+    }
+    else {
+        winner = ResolveNonMatchingPairWinner(dealer);
+    }
+    std::cout << "\nThe winner of this round is: " << winner << "\n";
+    std::cout << "hand: " << dealer.players[winner].bloodCard.ToString() << " | " << dealer.players[winner].sandCard.ToString() << "\n";
 }
 int Game::RollDice() {
     std::random_device rd;
