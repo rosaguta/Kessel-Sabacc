@@ -11,14 +11,14 @@ enum Number
     FOUR = 4,
     FIVE = 5,
     SIX = 6,
-    IMPOSTOR,
-    IMPOSTOR_1,
-    IMPOSTOR_2,
-    IMPOSTOR_3,
-    IMPOSTOR_4,
-    IMPOSTOR_5,
-    IMPOSTOR_6,
-    SYLOP,
+    IMPOSTOR = 7,
+    IMPOSTOR_1 = -1, // can use std::abs() to get the positive value of this number
+    IMPOSTOR_2 = -2,
+    IMPOSTOR_3 = -3,
+    IMPOSTOR_4 = -4,
+    IMPOSTOR_5 = -5,
+    IMPOSTOR_6 = -6,
+    SYLOP = 8,
 
 };
 
