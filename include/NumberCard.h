@@ -31,7 +31,7 @@ enum CardFamily
 struct NumberCard
 {
     CardFamily cardFamily;
-    Number number;
+    mutable Number number;
     std::string ToString() const {
         std::string familyName;
         std::string nmr;
