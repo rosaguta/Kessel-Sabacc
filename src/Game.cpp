@@ -112,6 +112,7 @@ int Game::ResolveSylopCards(Dealer &dealer) {
     }
     return SylopPlayerIndex;
 }
+//TODO: tax the losing players
 void Game::EvaluateRound(Dealer &dealer) {
     int winner;
     winner = ResolveSylopCards(dealer);
