@@ -37,7 +37,6 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
 void Game::ResolveEndOfRound(Dealer &dealer) {
     EvaluateRound(dealer);
     currentRound++;
-    currentPhase = GamePhase::AWAITING_PLAYER_ACTION;
     currentTurn = 1;
     activePlayerIndex = 0;
     dealer.Reset();
@@ -61,7 +60,7 @@ int Game::ResolveMatchingPairWinner(Dealer &dealer) {
         if (!currentPlayer.matchingPair) {
             continue;
         }
-        if (winningPlayerIndex == -1 || currentPlayer.bloodCard.number < dealer.players[winningPlayerIndex].bloodCard.number)
+        if (winningPlayerIndex == -1 || std::abs(currentPlayer.bloodCard.number) < std::abs(dealer.players[winningPlayerIndex].bloodCard.number))
         {
             winningPlayerIndex = i;
         }
@@ -83,8 +82,20 @@ int Game::ResolveNonMatchingPairWinner(Dealer &dealer) {
     }
     return winningPlayerIndex;
 }
+void Game::ResolveImpostorCards(Dealer &dealer) {
+    for (int i = 0; i < dealer.players.size(); i++) {
+        const auto& currentPlayer = dealer.players[i];
+        if (currentPlayer.bloodCard.number == IMPOSTOR) {
+            currentPlayer.bloodCard.number = static_cast<Number>(RollDice());
+        }
+        if (currentPlayer.sandCard.number == IMPOSTOR) {
+            currentPlayer.sandCard.number = static_cast<Number>(RollDice());
+        }
+    }
+}
 void Game::EvaluateRound(Dealer &dealer) {
     int winner;
+    ResolveImpostorCards(dealer);
     bool matchingPair = MatchingPairExist(dealer);
     if (matchingPair) {
         winner = ResolveMatchingPairWinner(dealer);
@@ -98,7 +109,7 @@ void Game::EvaluateRound(Dealer &dealer) {
 int Game::RollDice() {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(1 , 6);
+    std::uniform_int_distribution<> distr(-6 , -1);
     return distr(gen);
 }
 

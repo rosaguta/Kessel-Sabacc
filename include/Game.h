@@ -18,6 +18,8 @@ class Game {
 
     static int ResolveNonMatchingPairWinner(Dealer &dealer);
 
+    void ResolveImpostorCards(Dealer &dealer);
+
     int RollDice();
 
 public:
@@ -28,8 +30,8 @@ public:
     bool ApplyAction(const PlayerAction& action, Dealer& dealer);
     void ResolveEndOfRound(Dealer& dealer);
 
-
     bool IsGameOver() const;
+
     bool Prepare(Dealer* dealer);
 };
 
