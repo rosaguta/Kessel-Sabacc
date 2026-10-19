@@ -44,9 +44,6 @@ public:
     std::vector<Player> players;
     std::vector<Player> defeatedPlayers;
 
-    int imposterCards = 6;
-    int sylopCards = 2;
-
     Dealer();
 
     bool AddParticipant(const Player &player);
