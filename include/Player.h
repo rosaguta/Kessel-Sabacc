@@ -19,14 +19,18 @@ private:
 public:
     NumberCard bloodCard{};
     NumberCard sandCard{};
-
+    bool matchingPair;
     int specialCards;
     std::vector<ShiftToken> shiftTokens;
     int chips;
+    int usedChips;
 
     Player();
 
     void printCurrentHand();
+
+    void SpendChips();
+    void EvaluateMatchingPair();
 };
 
 enum class ActionType {
