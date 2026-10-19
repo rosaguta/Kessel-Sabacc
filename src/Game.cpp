@@ -93,15 +93,37 @@ void Game::ResolveImpostorCards(Dealer &dealer) {
         }
     }
 }
+
+int Game::ResolveSylopCards(Dealer &dealer) {
+    int SylopPlayerIndex = NAN;
+    for (int i = 0; i < dealer.players.size(); i++) {
+        const auto& currentPlayer = dealer.players[i];
+        if (currentPlayer.bloodCard.number == SYLOP && currentPlayer.sandCard.number == SYLOP) {
+            SylopPlayerIndex = i;
+            continue;
+        }
+        if (currentPlayer.bloodCard.number == SYLOP) {
+            currentPlayer.bloodCard.number = currentPlayer.sandCard.number;
+        }
+        if (currentPlayer.sandCard.number == SYLOP) {
+            currentPlayer.sandCard.number = currentPlayer.bloodCard.number;
+        }
+        dealer.players[i].EvaluateMatchingPair();
+    }
+    return SylopPlayerIndex;
+}
 void Game::EvaluateRound(Dealer &dealer) {
     int winner;
-    ResolveImpostorCards(dealer);
-    bool matchingPair = MatchingPairExist(dealer);
-    if (matchingPair) {
-        winner = ResolveMatchingPairWinner(dealer);
-    }
-    else {
-        winner = ResolveNonMatchingPairWinner(dealer);
+    winner = ResolveSylopCards(dealer);
+    if (std::isnan(winner)){
+        ResolveImpostorCards(dealer);
+        bool matchingPair = MatchingPairExist(dealer);
+        if (matchingPair) {
+            winner = ResolveMatchingPairWinner(dealer);
+        }
+        else {
+            winner = ResolveNonMatchingPairWinner(dealer);
+        }
     }
     std::cout << "\nThe winner of this round is: " << winner << "\n";
     std::cout << "hand: " << dealer.players[winner].bloodCard.ToString() << " | " << dealer.players[winner].sandCard.ToString() << "\n";

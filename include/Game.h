@@ -20,6 +20,8 @@ class Game {
 
     void ResolveImpostorCards(Dealer &dealer);
 
+    static int ResolveSylopCards(Dealer &dealer);
+
     int RollDice();
 
 public:
