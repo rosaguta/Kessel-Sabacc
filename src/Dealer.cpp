@@ -121,6 +121,7 @@ bool Dealer::DealCards() {
 
         player.sandCard = sandNumberCards.back();
         sandNumberCards.pop_back();
+        player.EvaluateMatchingPair();
     }
     this->faceUpBloodCard = bloodNumberCards.back();
     bloodNumberCards.pop_back();
