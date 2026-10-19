@@ -79,24 +79,41 @@ int main() {
         return 1;
     }
     //TODO: update the game loop
-    while (!game.IsGameOver()) {
-        if (game.currentTurn > 2) {
-            game.currentPhase = GamePhase::ROUND_END;
-        }
-        if (game.currentPhase == GamePhase::ROUND_END) {
-            game.ResolveEndOfRound(dealer);
-        }
-        if (game.activePlayerIndex > dealer.players.size() - 1) {
-            game.currentTurn++;
-            game.activePlayerIndex = 0;
-        }
+    while (!game.IsGameOver())
+    {
         RenderTerminal(game, dealer);
-        if (game.currentPhase == GamePhase::AWAITING_PLAYER_ACTION) {
-            PlayerAction action = GetTerminalInput(game.activePlayerIndex, dealer);
-            game.ApplyAction(action, dealer);
-            game.activePlayerIndex++;
-        }
+        switch (game.currentPhase)
+        {
+            case GamePhase::AWAITING_PLAYER_ACTION:
+            {
+                if (game.currentTurn > 2 && static_cast<int>(dealer.players.size()) -1 == game.activePlayerIndex)
+                {
+                    game.currentPhase = GamePhase::ROUND_END;
+                }
+                PlayerAction action = GetTerminalInput(game.activePlayerIndex,dealer);
+                game.ApplyAction(action, dealer);
+                game.activePlayerIndex++;
+                if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) -1)
+                {
+                    game.activePlayerIndex = 0;
+                    game.currentTurn++;
+                }
 
+                break;
+            }
+            case GamePhase::ROUND_END:
+            {
+                game.ResolveEndOfRound(dealer);
+                game.currentPhase = GamePhase::AWAITING_PLAYER_ACTION;
+                break;
+            }
+
+            default:
+            {
+                std::cerr << "Unhandled game phase.\n";
+                return 1;
+            }
+        }
     }
     return 0;
 }
