@@ -44,6 +44,7 @@ public:
     std::vector<Player> players;
     std::vector<Player> defeatedPlayers;
 
+    int sabacc = 1; // determines the best sabacc value (by default 1/1 (doesnt overrule prime sabacc))
     Dealer();
 
     bool AddParticipant(const Player &player);
