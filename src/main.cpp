@@ -80,7 +80,7 @@ int main() {
     }
     //TODO: update the game loop
     while (!game.IsGameOver()) {
-        if (game.currentTurn > 3) {
+        if (game.currentTurn > 2) {
             game.currentPhase = GamePhase::ROUND_END;
         }
         if (game.currentPhase == GamePhase::ROUND_END) {
