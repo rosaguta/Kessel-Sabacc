@@ -52,7 +52,7 @@ Player::Player() {
         GENERAL_AUDIT,
         MARKDOWN
     };
-    chips = 2;
+    chips = 8;
 }
 
 void Player::printCurrentHand() {
@@ -78,4 +78,17 @@ void Player::printCurrentHand() {
     }
 
     std::cout << "\n";
+}
+
+void Player::SpendChips() {
+    chips--;
+    usedChips++;
+}
+
+void Player::EvaluateMatchingPair() {
+    if (bloodCard.number == sandCard.number) {
+        matchingPair = true;
+    }else {
+        matchingPair = false;
+    }
 }
