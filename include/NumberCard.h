@@ -5,6 +5,7 @@
 #include <string>
 enum Number
 {
+    SYLOP = 0,
     ONE = 1,
     TWO = 2,
     THREE = 3,
@@ -18,7 +19,6 @@ enum Number
     IMPOSTOR_4 = -4,
     IMPOSTOR_5 = -5,
     IMPOSTOR_6 = -6,
-    SYLOP = 8,
 
 };
 
