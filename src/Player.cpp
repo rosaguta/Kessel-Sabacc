@@ -53,6 +53,7 @@ Player::Player() {
         MARKDOWN
     };
     chips = 8;
+    usedChips = 0;
 }
 
 void Player::printCurrentHand() {
