@@ -14,9 +14,9 @@ class Game {
     void EvaluateRound(Dealer &dealer);
     bool MatchingPairExist(Dealer &dealer);
 
-    static int ResolveMatchingPairWinner(Dealer &dealer);
+    static std::vector<int> ResolveMatchingPairWinner(Dealer &dealer);
 
-    static int ResolveNonMatchingPairWinner(Dealer &dealer);
+    static std::vector<int> ResolveNonMatchingPairWinner(Dealer &dealer);
 
     void ResolveImpostorCards(Dealer &dealer);
 
