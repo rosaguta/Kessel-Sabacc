@@ -132,7 +132,7 @@ void Game::EvaluateRound(Dealer &dealer) {
 int Game::RollDice() {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(-6 , -1);
+    std::uniform_int_distribution<> distr(-6 , -1); // can change to min 1 and max 6, minuses are used for debugging
     return distr(gen);
 }
 
