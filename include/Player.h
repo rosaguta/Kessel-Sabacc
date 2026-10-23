@@ -30,6 +30,11 @@ public:
     void printCurrentHand();
 
     void SpendChips();
+
+    void RefundChips();
+
+    void TaxChips();
+
     void EvaluateMatchingPair();
 };
 

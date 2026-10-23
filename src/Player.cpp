@@ -85,6 +85,14 @@ void Player::SpendChips() {
     chips--;
     usedChips++;
 }
+void Player::RefundChips() {
+    int refundAmount = usedChips;
+    chips += refundAmount;
+    usedChips = 0;
+}
+void Player::TaxChips() {
+    usedChips = 0;
+}
 
 void Player::EvaluateMatchingPair() {
     if (bloodCard.number == sandCard.number) {
