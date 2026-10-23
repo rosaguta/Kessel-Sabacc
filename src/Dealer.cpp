@@ -32,16 +32,31 @@ void Dealer::HandleShiftFreeDrawToken(int playerIndex) {
     players[playerIndex].CanDrawForFree = true;
 }
 
-bool Dealer::HandleShiftRefundToken(int playerIndex) {
+void Dealer::HandleShiftRefundToken(int playerIndex) {
+    players[playerIndex].chips += 2;
 }
 
-bool Dealer::HandleShiftExtraRefundToken(int playerIndex) {
+void Dealer::HandleShiftExtraRefundToken(int playerIndex) {
+    players[playerIndex].chips += 3;
 }
 
-bool Dealer::HandleShiftGeneralTariffToken(int playerIndex) {
+void Dealer::HandleShiftGeneralTariffToken(int playerIndex) {
+    for (int i = 0; i < players.size(); i++)
+    {
+        if (i != playerIndex)
+        {
+            players[i].chips--;
+        }
+    }
 }
 
-bool Dealer::HandleShiftTargetTariffToken(int playerIndex, int targetPlayerIndex) {
+void Dealer::HandleShiftTargetTariffToken(int playerIndex, int targetPlayerIndex) {
+    players[targetPlayerIndex].chips -= 2;
+    if (players[targetPlayerIndex].chips < 0)
+    {
+        players[targetPlayerIndex].chips = 0;
+        RemovePlayer(targetPlayerIndex);
+    }
 }
 
 bool Dealer::HandleShiftEmbargoToken(int playerIndex, int targetPlayerIndex) {
@@ -54,6 +69,7 @@ bool Dealer::HandleShiftImmunityToken(int playerIndex) {
 }
 
 bool Dealer::HandleShiftGeneralAuditToken(int playerIndex) {
+
 }
 
 bool Dealer::HandleShiftTargetAuditToken(int playerIndex, int targetPlayerIndex) {
@@ -62,7 +78,18 @@ bool Dealer::HandleShiftTargetAuditToken(int playerIndex, int targetPlayerIndex)
 bool Dealer::HandleShiftMajorFraudToken() {
 }
 
-bool Dealer::HandleShiftEmbezzlementToken(int playerIndex) {
+void Dealer::HandleShiftEmbezzlementToken(int playerIndex) {
+    for (int i = 0; i < players.size(); i++)
+    {
+        if (i != playerIndex) {
+            players[i].chips--;
+            players[playerIndex].chips++;
+        }
+        if (players[i].chips <= 0)
+        {
+            RemovePlayer(i);
+        }
+    }
 }
 
 bool Dealer::HandleShiftCookTheBooksToken() {
@@ -72,6 +99,8 @@ bool Dealer::HandleShiftExhaustionToken(int playerIndex) {
 }
 
 bool Dealer::HandleShiftDirectTransactionToken(int playerIndex, int targetPlayerIndex) {
+    std::swap(players[playerIndex].bloodCard, players[targetPlayerIndex].bloodCard);
+    std::swap(players[playerIndex].sandCard, players[targetPlayerIndex].sandCard);
 }
 
 bool Dealer::HandleShiftPrimeSabaccToken(int playerIndex) {
@@ -217,13 +246,13 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
             return true;
             break;
         case REFUND:
-            return HandleShiftRefundToken(playerIndex);
+            HandleShiftRefundToken(playerIndex);
             break;
         case EXTRA_REFUND:
-            return HandleShiftExtraRefundToken(playerIndex);
+            HandleShiftExtraRefundToken(playerIndex);
             break;
         case GENERAL_TARIFF:
-            return HandleShiftGeneralTariffToken(playerIndex);
+            HandleShiftGeneralTariffToken(playerIndex);
             break;
         case TARGET_TARIFF:
             return HandleShiftTargetTariffToken(playerIndex, targetPlayerIndex);
@@ -247,7 +276,7 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
             return HandleShiftMajorFraudToken();
             break;
         case EMBEZZLEMENT:
-            return HandleShiftEmbezzlementToken(playerIndex);
+            HandleShiftEmbezzlementToken(playerIndex);
             break;
         case COOK_THE_BOOKS:
             return HandleShiftCookTheBooksToken();

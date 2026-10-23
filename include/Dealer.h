@@ -17,17 +17,17 @@ private:
     );
 
     void HandleShiftFreeDrawToken(int playerIndex); // Avoid the draw fee this turn
-    bool HandleShiftRefundToken(int playerIndex); // Retrieve 2 chips in play
-    bool HandleShiftExtraRefundToken(int playerIndex); // Retrieve 3 chips in play
-    bool HandleShiftGeneralTariffToken(int playerIndex); // Other players are taxed one chip
-    bool HandleShiftTargetTariffToken(int playerIndex, int targetPlayerIndex); // Target player is taxed 2 chips
+    void HandleShiftRefundToken(int playerIndex); // Retrieve 2 chips in play
+    void HandleShiftExtraRefundToken(int playerIndex); // Retrieve 3 chips in play
+    void HandleShiftGeneralTariffToken(int playerIndex); // Other players are taxed one chip
+    void HandleShiftTargetTariffToken(int playerIndex, int targetPlayerIndex); // Target player is taxed 2 chips
     bool HandleShiftEmbargoToken(int playerIndex, int targetPlayerIndex); // Next player must stand
     bool HandleShiftMarkdownToken(int playerIndex); // Set Sylop value to 0 until next reveal
     bool HandleShiftImmunityToken(int playerIndex); // Prevent Shift Token effects against you until next reveal
     bool HandleShiftGeneralAuditToken(int playerIndex); // Other players in stand are taxed 2 chips
     bool HandleShiftTargetAuditToken(int playerIndex, int targetPlayerIndex); // Choose a player in Stand. They are taxed three chips.
     bool HandleShiftMajorFraudToken(); // Set Impostor value to 6 until next reveal
-    bool HandleShiftEmbezzlementToken(int playerIndex); // Take one chip from each player’s pot to your pot
+    void HandleShiftEmbezzlementToken(int playerIndex); // Take one chip from each player’s pot to your pot
     bool HandleShiftCookTheBooksToken(); // Inverts Sabacc ranks until the next reveal (6/6 Sabacc is the best until next reveal)
     bool HandleShiftExhaustionToken(int playerIndex); // Choose a player. They must discard and draw a new hand
     bool HandleShiftDirectTransactionToken(int playerIndex, int targetPlayerIndex); // Choose a player. Trade hands with them.
