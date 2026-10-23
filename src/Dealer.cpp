@@ -137,11 +137,13 @@ bool Dealer::DrawBloodCard(int playerIndex) {
         return false;
     }
     if (players[playerIndex].CanDrawForFree){
-        players[playerIndex].SpendChips();
         players[playerIndex].CanDrawForFree = false;
+        players[playerIndex].bloodCard = bloodNumberCards.back();
+        bloodNumberCards.pop_back();
     }
     players[playerIndex].bloodCard = bloodNumberCards.back();
     bloodNumberCards.pop_back();
+    players[playerIndex].SpendChips();
     players[playerIndex].EvaluateMatchingPair();
     return true;
 }
@@ -152,11 +154,13 @@ bool Dealer::DrawSandCard(int playerIndex) {
         return false;
     }
     if (players[playerIndex].CanDrawForFree){
-        players[playerIndex].SpendChips();
         players[playerIndex].CanDrawForFree = false;
+        players[playerIndex].sandCard = sandNumberCards.back();
+        sandNumberCards.pop_back();
     }
     players[playerIndex].sandCard = sandNumberCards.back();
     sandNumberCards.pop_back();
+    players[playerIndex].SpendChips();
     players[playerIndex].EvaluateMatchingPair();
     return true;
 }
@@ -167,11 +171,15 @@ bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlay
         return false;
     }
     if (players[playerIndex].CanDrawForFree){
-        players[playerIndex].SpendChips();
         players[playerIndex].CanDrawForFree = false;
+        players[playerIndex].bloodCard = faceUpBloodCard;
+        faceUpBloodCard = cardFromPlayer;
+        players[playerIndex].EvaluateMatchingPair();
+        return true;
     }
     players[playerIndex].bloodCard = faceUpBloodCard;
     faceUpBloodCard = cardFromPlayer;
+    players[playerIndex].SpendChips();
     players[playerIndex].EvaluateMatchingPair();
     return true;
 }
@@ -182,11 +190,16 @@ bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlaye
         return false;
     }
     if (players[playerIndex].CanDrawForFree){
-        players[playerIndex].SpendChips();
         players[playerIndex].CanDrawForFree = false;
+        players[playerIndex].sandCard = faceUpBloodCard;
+        faceUpSandCard = cardFromPlayer;
+        players[playerIndex].EvaluateMatchingPair();
+        return true;
     }
+
     players[playerIndex].sandCard = faceUpBloodCard;
     faceUpSandCard = cardFromPlayer;
+    players[playerIndex].SpendChips();
     players[playerIndex].EvaluateMatchingPair();
     return true;
 }
