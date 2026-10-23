@@ -1,7 +1,10 @@
 #ifndef KESSEL_SABACC_GAME_H
 #define KESSEL_SABACC_GAME_H
 #include "Dealer.h"
-
+struct RoundResult {
+    std::vector<int> winners;
+    std::vector<int> losers;
+};
 enum class GamePhase {
     AWAITING_PLAYER_ACTION,
     PROCESSING_DICE_ROLL,
@@ -14,9 +17,9 @@ class Game {
     void EvaluateRound(Dealer &dealer);
     bool MatchingPairExist(Dealer &dealer);
 
-    static std::vector<int> ResolveMatchingPairWinner(Dealer &dealer);
+    static RoundResult ResolveMatchingPairWinner(Dealer &dealer);
 
-    static std::vector<int> ResolveNonMatchingPairWinner(Dealer &dealer);
+    static RoundResult ResolveNonMatchingPairWinner(Dealer &dealer);
 
     void ResolveImpostorCards(Dealer &dealer);
 
@@ -36,6 +39,7 @@ public:
 
     bool Prepare(Dealer* dealer);
 };
+
 
 
 
