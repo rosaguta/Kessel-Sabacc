@@ -53,16 +53,18 @@ bool Game::MatchingPairExist(Dealer &dealer) {
 }
 // Returns every player with the lowest matching pair.
 // A pair of Sylops is handled separately as Pure Sabacc.
-std::vector<int> Game::ResolveMatchingPairWinner(Dealer &dealer)
+RoundResult Game::ResolveMatchingPairWinner(Dealer &dealer)
 {
-    std::vector<int> winners;
+    RoundResult result;
     int lowestPairValue = std::numeric_limits<int>::max();
 
     for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i)
     {
         const auto& player = dealer.players[i];
-        if (!player.matchingPair)
+        if (!player.matchingPair){
+            result.losers.push_back(i);
             continue;
+        }
 
         int bloodValue = player.bloodCard.number;
         int pairValue = std::abs(bloodValue);
@@ -70,23 +72,26 @@ std::vector<int> Game::ResolveMatchingPairWinner(Dealer &dealer)
         if (pairValue < lowestPairValue)
         {
             lowestPairValue = pairValue;
-            winners.clear();
-            winners.push_back(i);
+            result.winners.clear();
+            result.winners.push_back(i);
         }
         else if (pairValue == lowestPairValue)
         {
-            winners.push_back(i);
+            result.winners.push_back(i);
+        }
+        else if (pairValue > lowestPairValue) {
+            result.losers.push_back(i);
         }
     }
 
-    return winners;
+    return result;
 }
 
 // If nobody has a matching pair, the lowest difference wins.
 // Every player tied for that difference wins.
-std::vector<int> Game::ResolveNonMatchingPairWinner(Dealer &dealer)
+RoundResult Game::ResolveNonMatchingPairWinner(Dealer &dealer)
 {
-    std::vector<int> winners;
+    RoundResult result;
     int lowestDifference = std::numeric_limits<int>::max();
 
     for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i)
@@ -101,16 +106,18 @@ std::vector<int> Game::ResolveNonMatchingPairWinner(Dealer &dealer)
         if (difference < lowestDifference)
         {
             lowestDifference = difference;
-            winners.clear();
-            winners.push_back(i);
+            result.winners.clear();
+            result.winners.push_back(i);
         }
         else if (difference == lowestDifference)
         {
-            winners.push_back(i);
+            result.winners.push_back(i);
+        }else if (difference > lowestDifference){
+            result.losers.push_back(i);
         }
     }
 
-    return winners;
+    return result;
 }
 void Game::ResolveImpostorCards(Dealer& dealer)
 {
@@ -133,7 +140,6 @@ void Game::ResolveImpostorCards(Dealer& dealer)
 int Game::ResolveSylopCards(Dealer &dealer)
 {
     int pureSabaccWinner = -1;
-
     for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i)
     {
         auto& player = dealer.players[i];
@@ -154,16 +160,17 @@ int Game::ResolveSylopCards(Dealer &dealer)
         {
             player.sandCard.number = player.bloodCard.number;
         }
+        player.EvaluateMatchingPair();
     }
 
     return pureSabaccWinner;
 }
-//TODO: tax the losing players
+
 void Game::EvaluateRound(Dealer& dealer)
 {
     ResolveImpostorCards(dealer);
     int pureSabaccWinner = ResolveSylopCards(dealer);
-    std::vector<int> winners;
+    RoundResult result;
     // If there is no Pure Sabacc, resolve normal hands.
     if (pureSabaccWinner == -1)
     {
@@ -181,46 +188,65 @@ void Game::EvaluateRound(Dealer& dealer)
         // Matching pairs always beat non-matching hands.
         if (matchingPairExists)
         {
-            winners = ResolveMatchingPairWinner(dealer);
+            result = ResolveMatchingPairWinner(dealer);
         }
         else
         {
-            winners = ResolveNonMatchingPairWinner(dealer);
+            result = ResolveNonMatchingPairWinner(dealer);
         }
     }else {
-        winners.push_back(pureSabaccWinner);
+        result.winners.push_back(pureSabaccWinner);
+        for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i) {
+            if (i != pureSabaccWinner)
+            {
+                result.losers.push_back(i);
+            }
+        }
     }
 
     //Display all winners.
-    if (winners.empty())
+    if (result.winners.empty())
     {
         std::cout << "No winner could be determined.\n";
         return;
     }
 
-    if (winners.size() == 1)
+    if (result.winners.size() == 1)
     {
         std::cout << "\nThe winner of this round is Player "
-                  << winners[0] << "!\n";
+                  << result.winners[0] << "!\n";
     }
     else
     {
         std::cout << "\nThe round is tied between these players:\n";
 
-        for (int winnerIndex : winners)
+        for (int winnerIndex : result.winners)
         {
             std::cout << "Player " << winnerIndex << '\n';
         }
     }
 
-    for (int winnerIndex : winners)
+    for (int winnerIndex : result.winners)
     {
-        const auto& player = dealer.players[winnerIndex];
+        auto& player = dealer.players[winnerIndex];
 
         std::cout << "Player " << winnerIndex << " hand: "
                   << player.bloodCard.ToString() << " | "
                   << player.sandCard.ToString() << '\n';
+        player.RefundChips();
     }
+    for (int loserIndex : result.losers)
+    {
+        auto& player = dealer.players[loserIndex];
+
+        std::cout << "Player " << loserIndex << " hand: "
+                  << player.bloodCard.ToString() << " | "
+                  << player.sandCard.ToString() << '\n';
+        player.TaxChips();
+        std::cout << "Player " << loserIndex << " remaining chips: "
+                  << player.chips << '\n';
+    }
+
 
     // TODO: Refund the winning players' invested chips
     // and tax the losing players according to their hand values.
