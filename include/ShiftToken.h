@@ -20,4 +20,6 @@ enum ShiftToken {
     DIRECT_TRANSACTION,
     PRIME_SABACC
 };
+
+
 #endif //KESSEL_SABACC_SHIFTTOKEN_H

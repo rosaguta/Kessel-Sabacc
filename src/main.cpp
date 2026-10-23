@@ -1,7 +1,30 @@
 #include <iostream>
+#include <map>
+
 #include "Dealer.h"
 #include "Player.h"
 #include "Game.h"
+std::map<ShiftToken, std::string> ShiftTokenToString = {
+    {FREE_DRAW, "Free Draw"},
+    {REFUND, "Refund"},
+    {EXTRA_REFUND, "Extra Refund"},
+    {GENERAL_TARIFF, "General Tariff"},
+    {TARGET_TARIFF, "Target Tariff"},
+    {EMBARGO, "Embargo"},
+    {MARKDOWN, "Markdown"},
+    {IMMUNITY, "Immunity"},
+    {GENERAL_AUDIT, "General Audit"},
+    {TARGET_AUDIT, "Target Audit"},
+    {MAJOR_FRAUD, "Major Fraud"},
+    {EMBEZZLEMENT, "Embezzlement"},
+    {COOK_THE_BOOKS, "Cook The Books"},
+    {EXHAUSTION, "Exhaustion"},
+    {DIRECT_TRANSACTION, "Direct Transaction"},
+    {PRIME_SABACC, "Prime Sabacc"}
+};
+static std::string enumToString(ShiftToken token) {
+    return ShiftTokenToString[token];
+}
 
 void RenderTerminal(const Game &game, const Dealer &dealer) {
     std::cout << "\n========================================\n";
@@ -36,7 +59,7 @@ PlayerAction GetTerminalInput(int activePlayerId, Dealer &dealer) {
     if (player.CanUseToken && !player.shiftTokens.empty()) {
         for (size_t i = 0; i < player.shiftTokens.size(); ++i) {
             std::cout << (tokenMenuStart + static_cast<int>(i))
-                      << ". Use token " << player.shiftTokens[i] << "\n";
+                      << ". Use token " << enumToString(player.shiftTokens[i]) << "\n";
         }
     }
     std::cout << "> ";
