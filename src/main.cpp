@@ -23,38 +23,70 @@ void RenderTerminal(const Game &game, const Dealer &dealer) {
 }
 
 PlayerAction GetTerminalInput(int activePlayerId, Dealer &dealer) {
-    if (dealer.players[activePlayerId].chips <= 0) {
-        std::cout << "Choose Action:\n";
-        std::cout << "1. Stand\n";
-    } else {
-        std::cout << "Choose Action:\n";
-        std::cout << "1. Stand\n2. Draw Blood Deck\n3. Draw Blood Discard\n"
-                << "4. Draw Sand Deck\n5. Draw Sand Discard\n> ";
+    Player &player = dealer.players[activePlayerId];
+    const int tokenMenuStart = 6;
+
+    std::cout << "Choose Action:\n";
+    std::cout << "1. Stand\n";
+    if (player.chips > 0) {
+        std::cout << "2. Draw Blood Deck\n3. Draw Blood Discard\n"
+                  << "4. Draw Sand Deck\n5. Draw Sand Discard\n";
     }
+
+    if (player.CanUseToken && !player.shiftTokens.empty()) {
+        for (size_t i = 0; i < player.shiftTokens.size(); ++i) {
+            std::cout << (tokenMenuStart + static_cast<int>(i))
+                      << ". Use token " << player.shiftTokens[i] << "\n";
+        }
+    }
+    std::cout << "> ";
+
     int choice;
     std::cin >> choice;
 
-    PlayerAction action;
+    PlayerAction action{};
     action.playerId = activePlayerId;
-    if (dealer.players[activePlayerId].chips <= 0) {
-        action.type = ActionType::STAND;
-    } else {
-        switch (choice) {
-            case 1: action.type = ActionType::STAND;
+
+    if (choice >= tokenMenuStart
+        && choice < tokenMenuStart + static_cast<int>(player.shiftTokens.size())
+        && player.CanUseToken) {
+        action.type = ActionType::USE_TOKEN;
+        action.token = player.shiftTokens[choice - tokenMenuStart];
+
+        switch (action.token) {
+            case TARGET_TARIFF:
+            case EMBARGO:
+            case TARGET_AUDIT:
+            case DIRECT_TRANSACTION:
+                std::cout << "Target player index: ";
+                std::cin >> action.targetPlayerIndex;
                 break;
-            case 2: action.type = ActionType::DRAW_BLOOD_DECK;
-                break;
-            case 3: action.type = ActionType::DRAW_BLOOD_DISCARD;
-                action.card = dealer.players[activePlayerId].bloodCard;
-                break;
-            case 4: action.type = ActionType::DRAW_SAND_DECK;
-                break;
-            case 5: action.type = ActionType::DRAW_SAND_DISCARD;
-                action.card = dealer.players[activePlayerId].sandCard;
-                break;
-            default: action.type = ActionType::STAND;
+            default:
                 break;
         }
+        return action;
+    }
+
+    if (player.chips <= 0) {
+        action.type = ActionType::STAND;
+        return action;
+    }
+
+    switch (choice) {
+        case 1: action.type = ActionType::STAND;
+            break;
+        case 2: action.type = ActionType::DRAW_BLOOD_DECK;
+            break;
+        case 3: action.type = ActionType::DRAW_BLOOD_DISCARD;
+            action.card = player.bloodCard;
+            break;
+        case 4: action.type = ActionType::DRAW_SAND_DECK;
+            break;
+        case 5: action.type = ActionType::DRAW_SAND_DISCARD;
+            action.card = player.sandCard;
+            break;
+        default: action.type = ActionType::STAND;
+            break;
     }
     return action;
 }
@@ -78,7 +110,7 @@ int main() {
     if (prepped == false) {
         return 1;
     }
-    //TODO: update the game loop
+
     while (!game.IsGameOver())
     {
         RenderTerminal(game, dealer);
@@ -86,19 +118,34 @@ int main() {
         {
             case GamePhase::AWAITING_PLAYER_ACTION:
             {
-                if (game.currentTurn > 2 && static_cast<int>(dealer.players.size()) -1 == game.activePlayerIndex)
+                if (game.currentTurn > 2 && static_cast<int>(dealer.players.size()) - 1 == game.activePlayerIndex)
                 {
                     game.currentPhase = GamePhase::ROUND_END;
+                    break;
                 }
-                PlayerAction action = GetTerminalInput(game.activePlayerIndex,dealer);
-                game.ApplyAction(action, dealer);
+
+                PlayerAction action = GetTerminalInput(game.activePlayerIndex, dealer);
+                bool applied = game.ApplyAction(action, dealer);
+                if (!applied) {
+                    std::cout << "Action failed.\n";
+                    break; // same player tries again
+                }
+
+                Player &active = dealer.players[game.activePlayerIndex];
+
+                // Token does not end the turn, player still stands or draws. as seen in StarWars Outlaws
+                if (action.type == ActionType::USE_TOKEN) {
+                    active.CanUseToken = false;
+                    break;
+                }
+
+                active.CanUseToken = true;
                 game.activePlayerIndex++;
-                if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) -1)
+                if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) - 1)
                 {
                     game.activePlayerIndex = 0;
                     game.currentTurn++;
                 }
-
                 break;
             }
             case GamePhase::ROUND_END:
@@ -107,7 +154,6 @@ int main() {
                 game.currentPhase = GamePhase::AWAITING_PLAYER_ACTION;
                 break;
             }
-
             default:
             {
                 std::cerr << "Unhandled game phase.\n";
