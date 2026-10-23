@@ -28,8 +28,8 @@ void Dealer::GenerateCards(
     });
 }
 
-bool Dealer::HandleShiftFreeDrawToken(int playerIndex) {
-
+void Dealer::HandleShiftFreeDrawToken(int playerIndex) {
+    players[playerIndex].CanDrawForFree = true;
 }
 
 bool Dealer::HandleShiftRefundToken(int playerIndex) {
@@ -132,12 +132,13 @@ bool Dealer::DealCards() {
 }
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
-bool Dealer::DrawBloodCard(int playerIndex, bool drawFee) {
-    if (players[playerIndex].chips <= 0 && drawFee) {
+bool Dealer::DrawBloodCard(int playerIndex) {
+    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
         return false;
     }
-    if (drawFee){
+    if (players[playerIndex].CanDrawForFree){
         players[playerIndex].SpendChips();
+        players[playerIndex].CanDrawForFree = false;
     }
     players[playerIndex].bloodCard = bloodNumberCards.back();
     bloodNumberCards.pop_back();
@@ -146,12 +147,13 @@ bool Dealer::DrawBloodCard(int playerIndex, bool drawFee) {
 }
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
-bool Dealer::DrawSandCard(int playerIndex, bool drawFee) {
-    if (players[playerIndex].chips <= 0 && drawFee) {
+bool Dealer::DrawSandCard(int playerIndex) {
+    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
         return false;
     }
-    if (drawFee){
+    if (players[playerIndex].CanDrawForFree){
         players[playerIndex].SpendChips();
+        players[playerIndex].CanDrawForFree = false;
     }
     players[playerIndex].sandCard = sandNumberCards.back();
     sandNumberCards.pop_back();
@@ -160,12 +162,13 @@ bool Dealer::DrawSandCard(int playerIndex, bool drawFee) {
 }
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
-bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer, bool drawFee) {
-    if (players[playerIndex].chips <= 0 && drawFee) {
+bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer) {
+    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
         return false;
     }
-    if (drawFee){
+    if (players[playerIndex].CanDrawForFree){
         players[playerIndex].SpendChips();
+        players[playerIndex].CanDrawForFree = false;
     }
     players[playerIndex].bloodCard = faceUpBloodCard;
     faceUpBloodCard = cardFromPlayer;
@@ -174,12 +177,13 @@ bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlay
 }
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
-bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer, bool drawFee) {
-    if (players[playerIndex].chips <= 0 && drawFee) {
+bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer) {
+    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
         return false;
     }
-    if (drawFee){
+    if (players[playerIndex].CanDrawForFree){
         players[playerIndex].SpendChips();
+        players[playerIndex].CanDrawForFree = false;
     }
     players[playerIndex].sandCard = faceUpBloodCard;
     faceUpSandCard = cardFromPlayer;
@@ -196,7 +200,8 @@ bool Dealer::RemovePlayer(int playerIndex) {
 bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targetPlayerIndex) {
     switch (shift_token) {
         case FREE_DRAW:
-            return HandleShiftFreeDrawToken(playerIndex);
+            HandleShiftFreeDrawToken(playerIndex);
+            return true;
             break;
         case REFUND:
             return HandleShiftRefundToken(playerIndex);

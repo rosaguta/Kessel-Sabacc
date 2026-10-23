@@ -16,7 +16,7 @@ private:
         CardFamily family
     );
 
-    bool HandleShiftFreeDrawToken(int playerIndex); // Avoid the draw fee this turn
+    void HandleShiftFreeDrawToken(int playerIndex); // Avoid the draw fee this turn
     bool HandleShiftRefundToken(int playerIndex); // Retrieve 2 chips in play
     bool HandleShiftExtraRefundToken(int playerIndex); // Retrieve 3 chips in play
     bool HandleShiftGeneralTariffToken(int playerIndex); // Other players are taxed one chip
@@ -55,13 +55,13 @@ public:
 
     bool PlayerCanSpendChips(int playerIndex, bool drawFee = true);
 
-    bool DrawBloodCard(int playerIndex, bool drawFee = true);
+    bool DrawBloodCard(int playerIndex);
 
-    bool DrawSandCard(int playerIndex, bool drawFee = true);
+    bool DrawSandCard(int playerIndex);
 
-    bool DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer, bool drawFee = true);
+    bool DrawDiscardBloodCard(int playerIndex, NumberCard cardFromPlayer);
 
-    bool DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer, bool drawFee = true);
+    bool DrawDiscardSandCard(int playerIndex, NumberCard cardFromPlayer);
 
     bool RemovePlayer(int playerIndex);
 
