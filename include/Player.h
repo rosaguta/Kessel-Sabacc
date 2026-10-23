@@ -24,6 +24,9 @@ public:
     std::vector<ShiftToken> shiftTokens;
     int chips;
     int usedChips;
+    bool CanDrawForFree;
+    bool CanUseToken;
+    std::vector<ShiftToken> usedShiftTokens;
 
     Player();
 
@@ -51,6 +54,8 @@ struct PlayerAction {
     int playerId;
     ActionType type;
     NumberCard card;
+    ShiftToken token{};
+    int targetPlayerIndex = -1;
 };
 
 #endif //KESSEL_SABACC_PLAYER_H

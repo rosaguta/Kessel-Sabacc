@@ -54,6 +54,9 @@ Player::Player() {
     };
     chips = 8;
     usedChips = 0;
+    matchingPair = false;
+    CanDrawForFree = false;
+    CanUseToken = true;
 }
 
 void Player::printCurrentHand() {
