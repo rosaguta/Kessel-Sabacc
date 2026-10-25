@@ -11,6 +11,15 @@ enum class GamePhase {
     ROUND_END,
     GAME_OVER
 };
+struct PlayerAction {
+    int playerId;
+    ActionType type;
+    NumberCard card;
+    ShiftToken token{};
+    int roundNumber;
+    int turnNumber;
+    int targetPlayerIndex = -1;
+};
 class Game {
     bool GameFinished = false;
     bool RoundFinished = false;
