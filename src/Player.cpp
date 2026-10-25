@@ -57,6 +57,9 @@ Player::Player() {
     matchingPair = false;
     CanDrawForFree = false;
     CanUseToken = true;
+    mustStand = false;
+    immune = false;
+    stoodThisRound = false;
 }
 
 void Player::printCurrentHand() {

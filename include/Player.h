@@ -26,6 +26,9 @@ public:
     int usedChips;
     bool CanDrawForFree;
     bool CanUseToken;
+    bool mustStand; // is set when a shifttoken is used to force a stand on a player
+    bool immune; // immune to shifttokens against the player
+    bool stoodThisRound;
     std::vector<ShiftToken> usedShiftTokens;
 
     Player();
@@ -50,12 +53,6 @@ enum class ActionType {
     USE_TOKEN,
 };
 
-struct PlayerAction {
-    int playerId;
-    ActionType type;
-    NumberCard card;
-    ShiftToken token{};
-    int targetPlayerIndex = -1;
-};
+
 
 #endif //KESSEL_SABACC_PLAYER_H
