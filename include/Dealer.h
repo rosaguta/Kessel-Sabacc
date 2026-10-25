@@ -29,7 +29,7 @@ private:
     bool HandleShiftMajorFraudToken(); // Set Impostor value to 6 until next reveal
     void HandleShiftEmbezzlementToken(int playerIndex); // Take one chip from each player’s pot to your pot
     bool HandleShiftCookTheBooksToken(); // Inverts Sabacc ranks until the next reveal (6/6 Sabacc is the best until next reveal)
-    bool HandleShiftExhaustionToken(int playerIndex); // Choose a player. They must discard and draw a new hand
+    bool HandleShiftExhaustionToken(int playerIndex, int targetPlayerIndex); // Choose a player. They must discard and draw a new hand
     bool HandleShiftDirectTransactionToken(int playerIndex, int targetPlayerIndex); // Choose a player. Trade hands with them.
     bool HandleShiftPrimeSabaccToken(int playerIndex); // Roll two dice. Pick one value as the new best sabacc
 
@@ -45,6 +45,10 @@ public:
     std::vector<Player> defeatedPlayers;
 
     int sabacc = 1; // determines the best sabacc value (by default 1/1 (doesnt overrule prime sabacc))
+    bool primeSabaccActive = false;
+    bool markdownActive = false;
+    bool majorFraudActive = false;
+    bool cookTheBooksActive = false;
     Dealer();
 
     bool AddParticipant(const Player &player);

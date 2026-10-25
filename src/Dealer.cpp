@@ -3,6 +3,7 @@
 #include <iostream>
 #include <random>
 #include <algorithm>
+#include <array>
 
 void Dealer::GenerateCards(
     std::vector<NumberCard>& cards,
@@ -41,69 +42,131 @@ void Dealer::HandleShiftExtraRefundToken(int playerIndex) {
 }
 
 void Dealer::HandleShiftGeneralTariffToken(int playerIndex) {
-    for (int i = 0; i < players.size(); i++)
+    for (int i = 0; i < static_cast<int>(players.size()); i++)
     {
-        if (i != playerIndex)
+        if (i != playerIndex && !players[i].immune)
         {
-            players[i].chips--;
+            players[i].chips = std::max(0, players[i].chips - 1);
         }
     }
 }
 
 void Dealer::HandleShiftTargetTariffToken(int playerIndex, int targetPlayerIndex) {
-    players[targetPlayerIndex].chips -= 2;
-    if (players[targetPlayerIndex].chips < 0)
+    if (targetPlayerIndex != playerIndex && !players[targetPlayerIndex].immune)
     {
-        players[targetPlayerIndex].chips = 0;
-        RemovePlayer(targetPlayerIndex);
+        players[targetPlayerIndex].chips = std::max(0, players[targetPlayerIndex].chips - 2);
     }
 }
 
 bool Dealer::HandleShiftEmbargoToken(int playerIndex, int targetPlayerIndex) {
+    if (targetPlayerIndex != playerIndex && !players[targetPlayerIndex].immune)
+    {
+        players[targetPlayerIndex].mustStand = true;
+    }
+    return true;
 }
 
 bool Dealer::HandleShiftMarkdownToken(int playerIndex) {
+    (void)playerIndex;
+    markdownActive = true;
+    return true;
 }
 
 bool Dealer::HandleShiftImmunityToken(int playerIndex) {
+    players[playerIndex].immune = true;
+    return true;
 }
 
 bool Dealer::HandleShiftGeneralAuditToken(int playerIndex) {
-
+    for (int i = 0; i < static_cast<int>(players.size()); ++i)
+    {
+        if (i != playerIndex && players[i].stoodThisRound && !players[i].immune)
+        {
+            players[i].chips = std::max(0, players[i].chips - 2);
+        }
+    }
+    return true;
 }
 
 bool Dealer::HandleShiftTargetAuditToken(int playerIndex, int targetPlayerIndex) {
+    Player& target = players[targetPlayerIndex];
+    if (targetPlayerIndex == playerIndex || !target.stoodThisRound)
+    {
+        return false;
+    }
+    if (!target.immune)
+    {
+        target.chips = std::max(0, target.chips - 3);
+    }
+    return true;
 }
 
 bool Dealer::HandleShiftMajorFraudToken() {
+    majorFraudActive = true;
+    return true;
 }
 
 void Dealer::HandleShiftEmbezzlementToken(int playerIndex) {
-    for (int i = 0; i < players.size(); i++)
+    for (int i = 0; i < static_cast<int>(players.size()); i++)
     {
-        if (i != playerIndex) {
+        if (i != playerIndex && !players[i].immune && players[i].chips > 0) {
             players[i].chips--;
             players[playerIndex].chips++;
-        }
-        if (players[i].chips <= 0)
-        {
-            RemovePlayer(i);
         }
     }
 }
 
 bool Dealer::HandleShiftCookTheBooksToken() {
+    cookTheBooksActive = true;
+    sabacc = 6;
+    return true;
 }
 
-bool Dealer::HandleShiftExhaustionToken(int playerIndex) {
+bool Dealer::HandleShiftExhaustionToken(int playerIndex, int targetPlayerIndex) {
+    (void)playerIndex;
+    Player& target = players[targetPlayerIndex];
+    if (target.immune)
+    {
+        return true;
+    }
+
+    bloodNumberCards.push_back(target.bloodCard);
+    sandNumberCards.push_back(target.sandCard);
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(), generator);
+    std::shuffle(sandNumberCards.begin(), sandNumberCards.end(), generator);
+
+    target.bloodCard = bloodNumberCards.back();
+    bloodNumberCards.pop_back();
+    target.sandCard = sandNumberCards.back();
+    sandNumberCards.pop_back();
+    target.EvaluateMatchingPair();
+    return true;
 }
 
 bool Dealer::HandleShiftDirectTransactionToken(int playerIndex, int targetPlayerIndex) {
+    if (targetPlayerIndex == playerIndex || players[targetPlayerIndex].immune)
+    {
+        return true;
+    }
     std::swap(players[playerIndex].bloodCard, players[targetPlayerIndex].bloodCard);
     std::swap(players[playerIndex].sandCard, players[targetPlayerIndex].sandCard);
+    players[playerIndex].EvaluateMatchingPair();
+    players[targetPlayerIndex].EvaluateMatchingPair();
+    return true;
 }
-
+// TODO: player must choose the new sabacc number
 bool Dealer::HandleShiftPrimeSabaccToken(int playerIndex) {
+    (void)playerIndex;
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::uniform_int_distribution<int> dice(1, 6);
+    const std::array<int, 2> rolls = {dice(generator), dice(generator)};
+    sabacc = rolls[0];
+    primeSabaccActive = true;
+    return true;
 }
 
 Dealer::Dealer()
@@ -131,6 +194,19 @@ bool Dealer::Reset() {
     sandNumberCards.clear();
     GenerateCards(bloodNumberCards, CardFamily::BLOOD);
     GenerateCards(sandNumberCards, CardFamily::SAND);
+    sabacc = 1;
+    primeSabaccActive = false;
+    markdownActive = false;
+    majorFraudActive = false;
+    cookTheBooksActive = false;
+    for (Player& player : players)
+    {
+        player.CanDrawForFree = false;
+        player.CanUseToken = true;
+        player.mustStand = false;
+        player.immune = false;
+        player.stoodThisRound = false;
+    }
     this->DealCards();
     return true;
 }
@@ -162,41 +238,46 @@ bool Dealer::DealCards() {
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawBloodCard(int playerIndex) {
-    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
+    if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
+        || bloodNumberCards.empty()
+        || (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree)) {
         return false;
     }
-    if (players[playerIndex].CanDrawForFree){
-        players[playerIndex].CanDrawForFree = false;
-        players[playerIndex].bloodCard = bloodNumberCards.back();
-        bloodNumberCards.pop_back();
-    }
+    const bool freeDraw = players[playerIndex].CanDrawForFree;
     players[playerIndex].bloodCard = bloodNumberCards.back();
     bloodNumberCards.pop_back();
-    players[playerIndex].SpendChips();
+    players[playerIndex].CanDrawForFree = false;
+    if (!freeDraw)
+    {
+        players[playerIndex].SpendChips();
+    }
     players[playerIndex].EvaluateMatchingPair();
     return true;
 }
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawSandCard(int playerIndex) {
-    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
+    if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
+        || sandNumberCards.empty()
+        || (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree)) {
         return false;
     }
-    if (players[playerIndex].CanDrawForFree){
-        players[playerIndex].CanDrawForFree = false;
-        players[playerIndex].sandCard = sandNumberCards.back();
-        sandNumberCards.pop_back();
-    }
+    const bool freeDraw = players[playerIndex].CanDrawForFree;
     players[playerIndex].sandCard = sandNumberCards.back();
     sandNumberCards.pop_back();
-    players[playerIndex].SpendChips();
+    players[playerIndex].CanDrawForFree = false;
+    if (!freeDraw)
+    {
+        players[playerIndex].SpendChips();
+    }
     players[playerIndex].EvaluateMatchingPair();
     return true;
 }
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer) {
-    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
+    if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
+        || (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree)) {
         return false;
     }
     if (players[playerIndex].CanDrawForFree){
@@ -215,18 +296,19 @@ bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlay
 // returns false if the player doesnt have enough chips
 //TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer) {
-    if (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree) {
+    if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
+        || (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree)) {
         return false;
     }
     if (players[playerIndex].CanDrawForFree){
         players[playerIndex].CanDrawForFree = false;
-        players[playerIndex].sandCard = faceUpBloodCard;
+        players[playerIndex].sandCard = faceUpSandCard;
         faceUpSandCard = cardFromPlayer;
         players[playerIndex].EvaluateMatchingPair();
         return true;
     }
 
-    players[playerIndex].sandCard = faceUpBloodCard;
+    players[playerIndex].sandCard = faceUpSandCard;
     faceUpSandCard = cardFromPlayer;
     players[playerIndex].SpendChips();
     players[playerIndex].EvaluateMatchingPair();
@@ -234,12 +316,31 @@ bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlaye
 }
 
 bool Dealer::RemovePlayer(int playerIndex) {
+    if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size()))
+    {
+        return false;
+    }
     defeatedPlayers.push_back(players[playerIndex]);
     players.erase(players.begin() + playerIndex);
     return true;
 }
 
 bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targetPlayerIndex) {
+    if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size()))
+    {
+        return false;
+    }
+    const bool needsTarget = shift_token == TARGET_TARIFF
+        || shift_token == EMBARGO
+        || shift_token == TARGET_AUDIT
+        || shift_token == EXHAUSTION
+        || shift_token == DIRECT_TRANSACTION;
+    if (needsTarget && (targetPlayerIndex < 0
+        || targetPlayerIndex >= static_cast<int>(players.size())
+        || targetPlayerIndex == playerIndex))
+    {
+        return false;
+    }
     switch (shift_token) {
         case FREE_DRAW:
             HandleShiftFreeDrawToken(playerIndex);
@@ -247,53 +348,42 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
             break;
         case REFUND:
             HandleShiftRefundToken(playerIndex);
-            break;
+            return true;
         case EXTRA_REFUND:
             HandleShiftExtraRefundToken(playerIndex);
-            break;
+            return true;
         case GENERAL_TARIFF:
             HandleShiftGeneralTariffToken(playerIndex);
-            break;
+            return true;
         case TARGET_TARIFF:
-            return HandleShiftTargetTariffToken(playerIndex, targetPlayerIndex);
-            break;
+            HandleShiftTargetTariffToken(playerIndex, targetPlayerIndex);
+            return true;
         case EMBARGO:
             return HandleShiftEmbargoToken(playerIndex, targetPlayerIndex);
-            break;
         case MARKDOWN:
             return HandleShiftMarkdownToken(playerIndex);
-            break;
         case IMMUNITY:
             return HandleShiftImmunityToken(playerIndex);
-            break;
         case GENERAL_AUDIT:
             return HandleShiftGeneralAuditToken(playerIndex);
-            break;
         case TARGET_AUDIT:
             return HandleShiftTargetAuditToken(playerIndex, targetPlayerIndex);
-            break;
         case MAJOR_FRAUD:
             return HandleShiftMajorFraudToken();
-            break;
         case EMBEZZLEMENT:
             HandleShiftEmbezzlementToken(playerIndex);
-            break;
+            return true;
         case COOK_THE_BOOKS:
             return HandleShiftCookTheBooksToken();
-            break;
         case EXHAUSTION:
-            return HandleShiftExhaustionToken(playerIndex);
-            break;
+            return HandleShiftExhaustionToken(playerIndex, targetPlayerIndex);
         case DIRECT_TRANSACTION:
             return HandleShiftDirectTransactionToken(playerIndex, targetPlayerIndex);
-            break;
         case PRIME_SABACC:
             return HandleShiftPrimeSabaccToken(playerIndex);
-            break;
         default:
             std::cout << "Invalid shift token" << std::endl;
             return false;
     }
 }
-
 
