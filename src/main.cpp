@@ -45,13 +45,23 @@ void RenderTerminal(const Game &game, const Dealer &dealer) {
     std::cout << "========================================\n";
 }
 
-PlayerAction GetTerminalInput(int activePlayerId, Dealer &dealer) {
-    Player &player = dealer.players[activePlayerId];
+PlayerAction GetTerminalInput(Game game, Dealer &dealer) {
+    Player &player = dealer.players[game.activePlayerIndex];
     const int tokenMenuStart = 6;
+
+    if (player.mustStand)
+    {
+        PlayerAction action{};
+        action.playerId = game.activePlayerIndex;
+        action.type = ActionType::STAND;
+        action.roundNumber = game.currentRound;
+        action.turnNumber = game.currentTurn;
+        return action;
+    }
 
     std::cout << "Choose Action:\n";
     std::cout << "1. Stand\n";
-    if (player.chips > 0) {
+    if (player.chips > 0 || player.CanDrawForFree) {
         std::cout << "2. Draw Blood Deck\n3. Draw Blood Discard\n"
                   << "4. Draw Sand Deck\n5. Draw Sand Discard\n";
     }
@@ -68,8 +78,9 @@ PlayerAction GetTerminalInput(int activePlayerId, Dealer &dealer) {
     std::cin >> choice;
 
     PlayerAction action{};
-    action.playerId = activePlayerId;
-
+    action.playerId = game.activePlayerIndex;
+    action.roundNumber = game.currentRound;
+    action.turnNumber = game.currentTurn;
     if (choice >= tokenMenuStart
         && choice < tokenMenuStart + static_cast<int>(player.shiftTokens.size())
         && player.CanUseToken) {
@@ -81,6 +92,7 @@ PlayerAction GetTerminalInput(int activePlayerId, Dealer &dealer) {
             case EMBARGO:
             case TARGET_AUDIT:
             case DIRECT_TRANSACTION:
+            case EXHAUSTION:
                 std::cout << "Target player index: ";
                 std::cin >> action.targetPlayerIndex;
                 break;
@@ -147,13 +159,23 @@ int main() {
                     break;
                 }
 
-                PlayerAction action = GetTerminalInput(game.activePlayerIndex, dealer);
+                if (dealer.players[game.activePlayerIndex].stoodThisRound)
+                {
+                    game.activePlayerIndex++;
+                    if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) - 1)
+                    {
+                        game.activePlayerIndex = 0;
+                        game.currentTurn++;
+                    }
+                    break;
+                }
+
+                PlayerAction action = GetTerminalInput(game, dealer);
                 bool applied = game.ApplyAction(action, dealer);
                 if (!applied) {
                     std::cout << "Action failed.\n";
                     break; // same player tries again
                 }
-
                 Player &active = dealer.players[game.activePlayerIndex];
 
                 // Token does not end the turn, player still stands or draws. as seen in StarWars Outlaws
