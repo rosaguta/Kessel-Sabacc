@@ -107,3 +107,11 @@ void Player::EvaluateMatchingPair() {
         matchingPair = false;
     }
 }
+
+void Player::resetState() {
+    immune = false;
+    CanDrawForFree = false;
+    CanUseToken = true;
+    mustStand = false;
+    stoodThisRound = false;
+}

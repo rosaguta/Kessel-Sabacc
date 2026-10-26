@@ -42,6 +42,8 @@ public:
     void TaxChips();
 
     void EvaluateMatchingPair();
+
+    void resetState();
 };
 
 enum class ActionType {

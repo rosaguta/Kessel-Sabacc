@@ -201,11 +201,7 @@ bool Dealer::Reset() {
     cookTheBooksActive = false;
     for (Player& player : players)
     {
-        player.CanDrawForFree = false;
-        player.CanUseToken = true;
-        player.mustStand = false;
-        player.immune = false;
-        player.stoodThisRound = false;
+        player.resetState();
     }
     this->DealCards();
     return true;
