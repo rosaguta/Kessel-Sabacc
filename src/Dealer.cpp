@@ -121,7 +121,7 @@ bool Dealer::HandleShiftCookTheBooksToken() {
     sabacc = 6;
     return true;
 }
-
+//TODO: make the player choose to discard their card
 bool Dealer::HandleShiftExhaustionToken(int playerIndex, int targetPlayerIndex) {
     (void)playerIndex;
     Player& target = players[targetPlayerIndex];
