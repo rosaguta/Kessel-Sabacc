@@ -82,15 +82,14 @@ RoundResult Game::ResolveMatchingPairWinner(Dealer &dealer)
     {
         if (dealer.primeSabaccActive && !dealer.cookTheBooksActive
             && player.matchingPair
-            && std::abs(static_cast<int>(player.bloodCard.number)) == dealer.sabacc)
+            && std::abs(player.bloodCard.number) == dealer.sabacc)
         {
             primeSabaccExists = true;
             break;
         }
     }
 
-    int bestPairValue = dealer.cookTheBooksActive ? std::numeric_limits<int>::min()
-                                                   : std::numeric_limits<int>::max();
+    int bestPairValue = dealer.cookTheBooksActive ? 1 : 6;
 
     for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i)
     {
@@ -132,7 +131,7 @@ RoundResult Game::ResolveMatchingPairWinner(Dealer &dealer)
         for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i)
         {
             const auto& player = dealer.players[i];
-            if (player.matchingPair && std::abs(static_cast<int>(player.bloodCard.number)) != bestPairValue)
+            if (player.matchingPair && std::abs(player.bloodCard.number) != bestPairValue)
             {
                 result.losers.push_back(i);
             }
@@ -227,8 +226,7 @@ int Game::ResolveSylopCards(Dealer &dealer)
     return pureSabaccWinner;
 }
 
-void Game::EvaluateRound(Dealer& dealer)
-{
+void Game::EvaluateRound(Dealer& dealer) {
     ResolveImpostorCards(dealer);
     int pureSabaccWinner = ResolveSylopCards(dealer);
     RoundResult result;
@@ -307,11 +305,8 @@ void Game::EvaluateRound(Dealer& dealer)
         std::cout << "Player " << loserIndex << " remaining chips: "
                   << player.chips << '\n';
     }
-
-
-    // TODO: Refund the winning players' invested chips
-    // and tax the losing players according to their hand values.
 }
+
 int Game::RollDice() {
     std::random_device rd;
     std::mt19937 gen(rd());
