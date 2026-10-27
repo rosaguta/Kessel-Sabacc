@@ -7,3 +7,10 @@ I do have some experience with C but it is still rather new to me and I want to 
 ## RULES
 The game will be defined by [this pdf](https://hyperspaceprops.com/wp-content/uploads/2024/09/Kessel-Sabacc-Rules-v4.pdf) of HyperSpaceProps
 
+## FEATURES
+
+| Feature       | Completed? | 
+| :------------ | :--------- | 
+| Base game     | Almost     | 
+| Client-server | no         |
+| GUI (raylib)  | no         | 
