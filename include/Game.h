@@ -23,7 +23,8 @@ struct PlayerAction {
 class Game {
     bool GameFinished = false;
     bool RoundFinished = false;
-    void EvaluateRound(Dealer &dealer);
+
+    RoundResult EvaluateRound(Dealer &dealer);
     bool MatchingPairExist(Dealer &dealer);
 
     static RoundResult ResolveMatchingPairWinner(Dealer &dealer);
