@@ -62,31 +62,6 @@ Player::Player() {
     stoodThisRound = false;
 }
 
-void Player::printCurrentHand() {
-    std::cout << "==The current hand is==\r\n";
-    std::cout << "Cards:\r\n";
-
-    std::cout << "  "
-            << getCardFamilyName(bloodCard.cardFamily)
-            << "\t"
-            << getNumberName(bloodCard.number)
-            << "\n";
-
-    std::cout << "  "
-            << getCardFamilyName(sandCard.cardFamily)
-            << "\t"
-            << getNumberName(sandCard.number)
-            << "\n";
-
-    std::cout << "  Shift tokens: ";
-
-    for (const auto &token: shiftTokens) {
-        std::cout << token << " ";
-    }
-
-    std::cout << "\n";
-}
-
 void Player::SpendChips() {
     chips--;
     usedChips++;

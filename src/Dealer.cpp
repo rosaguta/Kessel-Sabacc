@@ -1,6 +1,6 @@
 #include "Dealer.h"
 
-#include <iostream>
+// #include <iostream>
 #include <random>
 #include <algorithm>
 #include <array>
@@ -179,9 +179,6 @@ bool Dealer::AddParticipant(const Player& player)
 {
     if (players.size() >= MAX_PLAYERCOUNT)
     {
-        std::cout
-            << "A player could not be added because the table is full\r\n";
-
         return false;
     }
 
@@ -378,7 +375,6 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
         case PRIME_SABACC:
             return HandleShiftPrimeSabaccToken(playerIndex);
         default:
-            std::cout << "Invalid shift token" << std::endl;
             return false;
     }
 }

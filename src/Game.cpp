@@ -1,6 +1,4 @@
 #include "Game.h"
-#include <iostream>
-#include <ostream>
 #include <random>
 #include <algorithm>
 #include <cmath>
@@ -226,7 +224,7 @@ int Game::ResolveSylopCards(Dealer &dealer)
     return pureSabaccWinner;
 }
 
-void Game::EvaluateRound(Dealer& dealer) {
+RoundResult Game::EvaluateRound(Dealer &dealer) {
     ResolveImpostorCards(dealer);
     int pureSabaccWinner = ResolveSylopCards(dealer);
     RoundResult result;
@@ -262,49 +260,17 @@ void Game::EvaluateRound(Dealer& dealer) {
             }
         }
     }
-
-    //Display all winners.
-    if (result.winners.empty())
-    {
-        std::cout << "No winner could be determined.\n";
-        return;
-    }
-
-    if (result.winners.size() == 1)
-    {
-        std::cout << "\nThe winner of this round is Player "
-                  << result.winners[0] << "!\n";
-    }
-    else
-    {
-        std::cout << "\nThe round is tied between these players:\n";
-
-        for (int winnerIndex : result.winners)
-        {
-            std::cout << "Player " << winnerIndex << '\n';
-        }
-    }
-
     for (int winnerIndex : result.winners)
     {
         auto& player = dealer.players[winnerIndex];
-
-        std::cout << "Player " << winnerIndex << " hand: "
-                  << player.bloodCard.ToString() << " | "
-                  << player.sandCard.ToString() << '\n';
         player.RefundChips();
     }
     for (int loserIndex : result.losers)
     {
         auto& player = dealer.players[loserIndex];
-
-        std::cout << "Player " << loserIndex << " hand: "
-                  << player.bloodCard.ToString() << " | "
-                  << player.sandCard.ToString() << '\n';
         player.TaxChips();
-        std::cout << "Player " << loserIndex << " remaining chips: "
-                  << player.chips << '\n';
     }
+    return result;
 }
 
 int Game::RollDice() {
