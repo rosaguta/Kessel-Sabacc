@@ -59,7 +59,7 @@ Player::Player() {
     CanUseToken = true;
     mustStand = false;
     immune = false;
-    stoodThisRound = false;
+    stoodThisTurn = false;
 }
 
 void Player::SpendChips() {
@@ -88,5 +88,5 @@ void Player::resetState() {
     CanDrawForFree = false;
     CanUseToken = true;
     mustStand = false;
-    stoodThisRound = false;
+    stoodThisTurn = false;
 }

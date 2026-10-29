@@ -80,7 +80,7 @@ bool Dealer::HandleShiftImmunityToken(int playerIndex) {
 bool Dealer::HandleShiftGeneralAuditToken(int playerIndex) {
     for (int i = 0; i < static_cast<int>(players.size()); ++i)
     {
-        if (i != playerIndex && players[i].stoodThisRound && !players[i].immune)
+        if (i != playerIndex && players[i].stoodThisTurn && !players[i].immune)
         {
             players[i].chips = std::max(0, players[i].chips - 2);
         }
@@ -90,7 +90,7 @@ bool Dealer::HandleShiftGeneralAuditToken(int playerIndex) {
 
 bool Dealer::HandleShiftTargetAuditToken(int playerIndex, int targetPlayerIndex) {
     Player& target = players[targetPlayerIndex];
-    if (targetPlayerIndex == playerIndex || !target.stoodThisRound)
+    if (targetPlayerIndex == playerIndex || !target.stoodThisTurn)
     {
         return false;
     }

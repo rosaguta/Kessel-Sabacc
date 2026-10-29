@@ -153,19 +153,17 @@ int main() {
         {
             case GamePhase::AWAITING_PLAYER_ACTION:
             {
-                if (game.currentTurn > 2 && static_cast<int>(dealer.players.size()) - 1 == game.activePlayerIndex)
-                {
-                    game.currentPhase = GamePhase::ROUND_END;
-                    break;
-                }
-
-                if (dealer.players[game.activePlayerIndex].stoodThisRound)
+                if (dealer.players[game.activePlayerIndex].stoodThisTurn)
                 {
                     game.activePlayerIndex++;
                     if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) - 1)
                     {
                         game.activePlayerIndex = 0;
                         game.currentTurn++;
+                        for (auto& player : dealer.players)
+                        {
+                            player.stoodThisTurn = false;
+                        }
                     }
                     break;
                 }
@@ -188,8 +186,16 @@ int main() {
                 game.activePlayerIndex++;
                 if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) - 1)
                 {
+                    if (game.currentTurn == 3){
+                        game.currentPhase = GamePhase::ROUND_END;
+                    }
                     game.activePlayerIndex = 0;
                     game.currentTurn++;
+                    for (auto& player : dealer.players)
+                    {
+                        player.stoodThisTurn = false;
+                        player.mustStand = false;
+                    }
                 }
                 break;
             }

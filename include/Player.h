@@ -28,7 +28,7 @@ public:
     bool CanUseToken;
     bool mustStand; // is set when a shifttoken is used to force a stand on a player
     bool immune; // immune to shifttokens against the player
-    bool stoodThisRound;
+    bool stoodThisTurn;
     std::vector<ShiftToken> usedShiftTokens;
 
     Player();

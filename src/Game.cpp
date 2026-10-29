@@ -16,20 +16,20 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
     Player& player = dealer.players[action.playerId];
     switch (action.type) {
         case ActionType::DRAW_BLOOD_DECK:
-            if (player.stoodThisRound || player.mustStand) return false;
+            if (player.stoodThisTurn || player.mustStand) return false;
             return dealer.DrawBloodCard(action.playerId);
         case ActionType::DRAW_BLOOD_DISCARD:
-            if (player.stoodThisRound || player.mustStand) return false;
+            if (player.stoodThisTurn || player.mustStand) return false;
             return dealer.DrawDiscardBloodCard(action.playerId, action.card);
         case ActionType::DRAW_SAND_DECK:
-            if (player.stoodThisRound || player.mustStand) return false;
+            if (player.stoodThisTurn || player.mustStand) return false;
             return dealer.DrawSandCard(action.playerId);
         case ActionType::DRAW_SAND_DISCARD:
-            if (player.stoodThisRound || player.mustStand) return false;
+            if (player.stoodThisTurn || player.mustStand) return false;
             return dealer.DrawDiscardSandCard(action.playerId, action.card);
         case ActionType::USE_TOKEN:
         {
-            if (player.stoodThisRound || player.mustStand || !player.CanUseToken)
+            if (player.stoodThisTurn || player.mustStand || !player.CanUseToken)
             {
                 return false;
             }
@@ -45,7 +45,7 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
             return true;
         }
         case ActionType::STAND:
-            player.stoodThisRound = true;
+            player.stoodThisTurn = true;
             player.mustStand = false;
             return true;
         default:
