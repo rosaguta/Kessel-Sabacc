@@ -19,6 +19,7 @@ private:
 public:
     NumberCard bloodCard{};
     NumberCard sandCard{};
+    NumberCard CardInHand{};
     bool matchingPair;
     int specialCards;
     std::vector<ShiftToken> shiftTokens;

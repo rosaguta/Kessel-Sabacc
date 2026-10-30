@@ -45,6 +45,9 @@ void RenderTerminal(const Game &game, const Dealer &dealer) {
     std::cout << "========================================\n";
 }
 
+bool GetPlayerCardDecision() {
+    
+}
 PlayerAction GetTerminalInput(Game game, Dealer &dealer) {
     Player &player = dealer.players[game.activePlayerIndex];
     const int tokenMenuStart = 6;
@@ -198,6 +201,10 @@ int main() {
                     }
                 }
                 break;
+            }
+            case GamePhase::AWAITING_PLAYER_CARD_DECISION:
+            {
+
             }
             case GamePhase::ROUND_END:
             {

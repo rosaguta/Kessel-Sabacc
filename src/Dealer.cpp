@@ -237,7 +237,7 @@ bool Dealer::DrawBloodCard(int playerIndex) {
         return false;
     }
     const bool freeDraw = players[playerIndex].CanDrawForFree;
-    players[playerIndex].bloodCard = bloodNumberCards.back();
+    players[playerIndex].CardInHand = bloodNumberCards.back();
     bloodNumberCards.pop_back();
     players[playerIndex].CanDrawForFree = false;
     if (!freeDraw)
@@ -256,7 +256,7 @@ bool Dealer::DrawSandCard(int playerIndex) {
         return false;
     }
     const bool freeDraw = players[playerIndex].CanDrawForFree;
-    players[playerIndex].sandCard = sandNumberCards.back();
+    players[playerIndex].CardInHand = sandNumberCards.back();
     sandNumberCards.pop_back();
     players[playerIndex].CanDrawForFree = false;
     if (!freeDraw)

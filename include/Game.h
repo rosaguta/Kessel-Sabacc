@@ -8,6 +8,7 @@ struct RoundResult {
 enum class GamePhase {
     AWAITING_PLAYER_ACTION,
     PROCESSING_DICE_ROLL,
+    AWAITING_PLAYER_CARD_DECISION,
     ROUND_END,
     GAME_OVER
 };

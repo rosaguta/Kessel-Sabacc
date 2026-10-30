@@ -14,16 +14,21 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
         return false;
     }
     Player& player = dealer.players[action.playerId];
+    bool succeeded;
     switch (action.type) {
         case ActionType::DRAW_BLOOD_DECK:
             if (player.stoodThisTurn || player.mustStand) return false;
-            return dealer.DrawBloodCard(action.playerId);
+            succeeded = dealer.DrawBloodCard(action.playerId);
+            currentPhase = GamePhase::AWAITING_PLAYER_CARD_DECISION;
+            return succeeded;
         case ActionType::DRAW_BLOOD_DISCARD:
             if (player.stoodThisTurn || player.mustStand) return false;
             return dealer.DrawDiscardBloodCard(action.playerId, action.card);
         case ActionType::DRAW_SAND_DECK:
             if (player.stoodThisTurn || player.mustStand) return false;
-            return dealer.DrawSandCard(action.playerId);
+            succeeded = dealer.DrawSandCard(action.playerId);
+            currentPhase = GamePhase::AWAITING_PLAYER_CARD_DECISION;
+            return succeeded;
         case ActionType::DRAW_SAND_DISCARD:
             if (player.stoodThisTurn || player.mustStand) return false;
             return dealer.DrawDiscardSandCard(action.playerId, action.card);
