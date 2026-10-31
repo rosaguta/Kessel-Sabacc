@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <map>
 
 #include "Dealer.h"
@@ -45,8 +46,12 @@ void RenderTerminal(const Game &game, const Dealer &dealer) {
     std::cout << "========================================\n";
 }
 
-bool GetPlayerCardDecision() {
-    
+bool GetPlayerCardDecision(Game game, Dealer &dealer) {
+    std::cout << "\nDo you take the " << dealer.players[game.activePlayerIndex].cardInHand.ToString() << "? (y/n): ";
+    char choice = 'n';
+    std::cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    return choice == 'y';
 }
 PlayerAction GetTerminalInput(Game game, Dealer &dealer) {
     Player &player = dealer.players[game.activePlayerIndex];
@@ -151,11 +156,11 @@ int main() {
 
     while (!game.IsGameOver())
     {
-        RenderTerminal(game, dealer);
         switch (game.currentPhase)
         {
             case GamePhase::AWAITING_PLAYER_ACTION:
             {
+                RenderTerminal(game, dealer);
                 if (dealer.players[game.activePlayerIndex].stoodThisTurn)
                 {
                     game.activePlayerIndex++;
@@ -177,7 +182,13 @@ int main() {
                     std::cout << "Action failed.\n";
                     break; // same player tries again
                 }
+                if (action.type == ActionType::DRAW_BLOOD_DECK || action.type == ActionType::DRAW_SAND_DECK) {
+                    bool playerTakesCard = GetPlayerCardDecision(game, dealer);
+                    dealer.HandlePlayerInHandCardToMainHand(game.activePlayerIndex, playerTakesCard);
+                }
+
                 Player &active = dealer.players[game.activePlayerIndex];
+
 
                 // Token does not end the turn, player still stands or draws. as seen in StarWars Outlaws
                 if (action.type == ActionType::USE_TOKEN) {
@@ -201,10 +212,6 @@ int main() {
                     }
                 }
                 break;
-            }
-            case GamePhase::AWAITING_PLAYER_CARD_DECISION:
-            {
-
             }
             case GamePhase::ROUND_END:
             {

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <iostream>
+#include <bits/std_thread.h>
 
 std::string Player::getCardFamilyName(CardFamily family) {
     switch (family) {
@@ -89,4 +90,19 @@ void Player::resetState() {
     CanUseToken = true;
     mustStand = false;
     stoodThisTurn = false;
+}
+
+NumberCard Player::SwapInHandCardToMainHand() {
+    NumberCard swappedCard = {};
+    switch (cardInHand.cardFamily) {
+        case BLOOD:
+            std::swap(bloodCard, cardInHand);
+            swappedCard = bloodCard;
+            break;
+        case SAND:
+            std::swap(sandCard, cardInHand);
+            swappedCard = sandCard;
+            break;
+    }
+    return swappedCard;
 }

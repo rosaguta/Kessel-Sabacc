@@ -70,6 +70,8 @@ public:
     bool RemovePlayer(int playerIndex);
 
     bool HandleShiftToken(int playerIndex, ShiftToken shift_token, int targetPlayerIndex);
+
+    void HandlePlayerInHandCardToMainHand(int playerIndex, bool wantToSwap);
 };
 
 #endif //KESSEL_SABACC_DEALER_H

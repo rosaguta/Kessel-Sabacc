@@ -19,7 +19,6 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
         case ActionType::DRAW_BLOOD_DECK:
             if (player.stoodThisTurn || player.mustStand) return false;
             succeeded = dealer.DrawBloodCard(action.playerId);
-            currentPhase = GamePhase::AWAITING_PLAYER_CARD_DECISION;
             return succeeded;
         case ActionType::DRAW_BLOOD_DISCARD:
             if (player.stoodThisTurn || player.mustStand) return false;
@@ -27,7 +26,6 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
         case ActionType::DRAW_SAND_DECK:
             if (player.stoodThisTurn || player.mustStand) return false;
             succeeded = dealer.DrawSandCard(action.playerId);
-            currentPhase = GamePhase::AWAITING_PLAYER_CARD_DECISION;
             return succeeded;
         case ActionType::DRAW_SAND_DISCARD:
             if (player.stoodThisTurn || player.mustStand) return false;

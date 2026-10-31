@@ -19,7 +19,7 @@ private:
 public:
     NumberCard bloodCard{};
     NumberCard sandCard{};
-    NumberCard CardInHand{};
+    NumberCard cardInHand{};
     bool matchingPair;
     int specialCards;
     std::vector<ShiftToken> shiftTokens;
@@ -45,6 +45,8 @@ public:
     void EvaluateMatchingPair();
 
     void resetState();
+
+    NumberCard SwapInHandCardToMainHand();
 };
 
 enum class ActionType {
