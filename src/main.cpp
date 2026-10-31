@@ -124,11 +124,6 @@ PlayerAction GetTerminalInput(Game game, Dealer &dealer) {
         return action;
     }
 
-    if (player.chips <= 0) {
-        action.type = ActionType::STAND;
-        return action;
-    }
-
     switch (choice) {
         case 1: action.type = ActionType::STAND;
             break;
@@ -170,6 +165,12 @@ int main() {
 
     while (!game.IsGameOver())
     {
+        for (int i = 0; i < static_cast<int>(dealer.players.size()); i++)
+        {
+            if (dealer.players[i].chips <= 0) {
+                dealer.RemovePlayer(i);
+            }
+        }
         switch (game.currentPhase)
         {
             case GamePhase::AWAITING_PLAYER_ACTION:
@@ -200,9 +201,8 @@ int main() {
                     bool playerTakesCard = GetPlayerCardDecision(game, dealer);
                     dealer.HandlePlayerInHandCardToMainHand(game.activePlayerIndex, playerTakesCard);
                 }
-
                 Player &active = dealer.players[game.activePlayerIndex];
-
+                active.CanDrawForFree = false;
 
                 // Token does not end the turn, player still stands or draws. as seen in StarWars Outlaws
                 if (action.type == ActionType::USE_TOKEN) {
@@ -212,6 +212,7 @@ int main() {
 
                 active.CanUseToken = true;
                 game.activePlayerIndex++;
+
                 if (game.activePlayerIndex > static_cast<int>(dealer.players.size()) - 1)
                 {
                     if (game.currentTurn == 3){
