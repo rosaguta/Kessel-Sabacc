@@ -229,6 +229,8 @@ int Game::ResolveSylopCards(Dealer &dealer)
 }
 
 RoundResult Game::EvaluateRound(Dealer &dealer) {
+    //TODO: let the player resolve the impostor cards. in the hit game StarWars Outlaws,
+    //      the player gets prompted to roll a dice to set the value of te impostor cards.
     ResolveImpostorCards(dealer);
     int pureSabaccWinner = ResolveSylopCards(dealer);
     RoundResult result;
