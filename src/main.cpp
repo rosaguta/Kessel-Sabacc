@@ -26,7 +26,21 @@ std::map<ShiftToken, std::string> ShiftTokenToString = {
 static std::string enumToString(ShiftToken token) {
     return ShiftTokenToString[token];
 }
-
+static void PrintPlayerList(const std::vector<int> &playerIndexes) {
+    if (playerIndexes.empty()) {
+        std::cout << "None\n";
+        return;
+    }
+    for (int playerIndex : playerIndexes) {
+        std::cout << "Player " << playerIndex << "\n";
+    }
+}
+void PrintRoundResult(const RoundResult &result) {
+    std::cout << "\n================Winners===================\n";
+    PrintPlayerList(result.winners);
+    std::cout << "\n================Losers====================\n";
+    PrintPlayerList(result.losers);
+}
 void RenderTerminal(const Game &game, const Dealer &dealer) {
     std::cout << "\n========================================\n";
     std::cout << "ROUND " << game.currentRound << " | TURN " << game.currentTurn << "\n";
@@ -215,7 +229,9 @@ int main() {
             }
             case GamePhase::ROUND_END:
             {
-                game.ResolveEndOfRound(dealer);
+                RoundResult result = game.ResolveEndOfRound(dealer);
+                PrintRoundResult(result);
+
                 game.currentPhase = GamePhase::AWAITING_PLAYER_ACTION;
                 break;
             }

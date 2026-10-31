@@ -43,7 +43,8 @@ public:
     int currentTurn = 1;
     int activePlayerIndex = 0;
     bool ApplyAction(const PlayerAction& action, Dealer& dealer);
-    void ResolveEndOfRound(Dealer& dealer);
+
+    RoundResult ResolveEndOfRound(Dealer &dealer);
 
     bool IsGameOver() const;
 

@@ -56,12 +56,13 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
     }
 }
 
-void Game::ResolveEndOfRound(Dealer &dealer) {
-    EvaluateRound(dealer);
+RoundResult Game::ResolveEndOfRound(Dealer &dealer) {
+    RoundResult result = EvaluateRound(dealer);
     currentRound++;
     currentTurn = 1;
     activePlayerIndex = 0;
     dealer.Reset();
+    return result;
 }
 bool Game::MatchingPairExist(Dealer &dealer) {
     bool pairFound = false;
