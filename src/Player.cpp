@@ -73,6 +73,7 @@ void Player::RefundChips() {
     usedChips = 0;
 }
 void Player::TaxChips() {
+    chips = chips - usedChips;
     usedChips = 0;
 }
 
