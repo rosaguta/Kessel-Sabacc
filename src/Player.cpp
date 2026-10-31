@@ -1,5 +1,4 @@
 #include "Player.h"
-#include <iostream>
 #include <bits/std_thread.h>
 
 std::string Player::getCardFamilyName(CardFamily family) {
