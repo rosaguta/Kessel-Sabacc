@@ -173,6 +173,10 @@ Dealer::Dealer()
 {
     GenerateCards(bloodNumberCards, CardFamily::BLOOD);
     GenerateCards(sandNumberCards, CardFamily::SAND);
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(), generator);
+    std::shuffle(sandNumberCards.begin(), sandNumberCards.end(), generator);
 }
 
 bool Dealer::AddParticipant(const Player& player)
@@ -191,6 +195,10 @@ bool Dealer::Reset() {
     sandNumberCards.clear();
     GenerateCards(bloodNumberCards, CardFamily::BLOOD);
     GenerateCards(sandNumberCards, CardFamily::SAND);
+    std::random_device rd;
+    std::mt19937 generator(rd());
+    std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(), generator);
+    std::shuffle(sandNumberCards.begin(), sandNumberCards.end(), generator);
     sabacc = 1;
     primeSabaccActive = false;
     markdownActive = false;
@@ -206,12 +214,6 @@ bool Dealer::Reset() {
 
 //TODO: add return false when the cards couldnt be shuffled/dealt
 bool Dealer::DealCards() {
-    std::random_device rd;
-    std::mt19937 generator(rd());
-
-    std::shuffle(bloodNumberCards.begin(), bloodNumberCards.end(),generator);
-    std::shuffle(sandNumberCards.begin(), sandNumberCards.end(),generator);
-
     for (Player& player : players)
     {
         player.bloodCard = bloodNumberCards.back();
@@ -237,7 +239,7 @@ bool Dealer::DrawBloodCard(int playerIndex) {
         return false;
     }
     const bool freeDraw = players[playerIndex].CanDrawForFree;
-    players[playerIndex].CardInHand = bloodNumberCards.back();
+    players[playerIndex].cardInHand = bloodNumberCards.back();
     bloodNumberCards.pop_back();
     players[playerIndex].CanDrawForFree = false;
     if (!freeDraw)
@@ -256,7 +258,7 @@ bool Dealer::DrawSandCard(int playerIndex) {
         return false;
     }
     const bool freeDraw = players[playerIndex].CanDrawForFree;
-    players[playerIndex].CardInHand = sandNumberCards.back();
+    players[playerIndex].cardInHand = sandNumberCards.back();
     sandNumberCards.pop_back();
     players[playerIndex].CanDrawForFree = false;
     if (!freeDraw)
@@ -378,4 +380,30 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
             return false;
     }
 }
+void Dealer::HandlePlayerInHandCardToMainHand(int playerIndex, bool wantToSwap) {
+    Player& player = players[playerIndex];
+    if (wantToSwap)
+    {
+        NumberCard swappedCardFromPlayer = player.SwapInHandCardToMainHand();
+        switch (swappedCardFromPlayer.cardFamily) {
+            case BLOOD:
+                std::swap(faceUpBloodCard, swappedCardFromPlayer);
+                break;
+            case SAND:
+                std::swap(faceUpSandCard, swappedCardFromPlayer);
+                break;
+        }
+    }
+    else {
+        switch (player.cardInHand.cardFamily) {
+            case BLOOD:
+                std::swap(faceUpBloodCard, player.cardInHand);
+                break;
+            case SAND:
+                std::swap(faceUpSandCard, player.cardInHand);
+                break;
+        }
+    }
+    player.cardInHand = NumberCard();
 
+}
