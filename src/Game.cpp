@@ -38,7 +38,7 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
             }
             const auto token = std::find(player.shiftTokens.begin(), player.shiftTokens.end(), action.token);
             if (token == player.shiftTokens.end()
-                || !dealer.HandleShiftToken(action.playerId, action.token, action.targetPlayerIndex))
+                || !dealer.HandleShiftToken(action.playerId, action.token, action.targetPlayerIndex, action.sabaccNumber))
             {
                 return false;
             }

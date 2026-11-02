@@ -121,7 +121,7 @@ bool Dealer::HandleShiftCookTheBooksToken() {
     sabacc = 6;
     return true;
 }
-//TODO: make the player choose which card to discard
+
 bool Dealer::HandleShiftExhaustionToken(int playerIndex, int targetPlayerIndex) {
     (void)playerIndex;
     Player& target = players[targetPlayerIndex];
@@ -157,14 +157,9 @@ bool Dealer::HandleShiftDirectTransactionToken(int playerIndex, int targetPlayer
     players[targetPlayerIndex].EvaluateMatchingPair();
     return true;
 }
-// TODO: player must choose the new sabacc number
-bool Dealer::HandleShiftPrimeSabaccToken(int playerIndex) {
+bool Dealer::HandleShiftPrimeSabaccToken(int playerIndex, int newSabbacNumber) {
     (void)playerIndex;
-    std::random_device rd;
-    std::mt19937 generator(rd());
-    std::uniform_int_distribution<int> dice(1, 6);
-    const std::array<int, 2> rolls = {dice(generator), dice(generator)};
-    sabacc = rolls[0];
+    sabacc = newSabbacNumber;
     primeSabaccActive = true;
     return true;
 }
@@ -231,7 +226,6 @@ bool Dealer::DealCards() {
     return true;
 }
 // returns false if the player doesnt have enough chips
-//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawBloodCard(int playerIndex) {
     if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
         || bloodNumberCards.empty()
@@ -250,7 +244,6 @@ bool Dealer::DrawBloodCard(int playerIndex) {
     return true;
 }
 // returns false if the player doesnt have enough chips
-//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawSandCard(int playerIndex) {
     if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
         || sandNumberCards.empty()
@@ -269,7 +262,6 @@ bool Dealer::DrawSandCard(int playerIndex) {
     return true;
 }
 // returns false if the player doesnt have enough chips
-//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlayer) {
     if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
         || (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree)) {
@@ -289,7 +281,6 @@ bool Dealer::DrawDiscardBloodCard(int playerIndex, const NumberCard cardFromPlay
     return true;
 }
 // returns false if the player doesnt have enough chips
-//TODO: account for the FREE_DRAW shifttoken during gameplay
 bool Dealer::DrawDiscardSandCard(int playerIndex, const NumberCard cardFromPlayer) {
     if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size())
         || (players[playerIndex].chips <= 0 && !players[playerIndex].CanDrawForFree)) {
@@ -320,7 +311,7 @@ bool Dealer::RemovePlayer(int playerIndex) {
     return true;
 }
 
-bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targetPlayerIndex) {
+bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targetPlayerIndex, int newSabbacNumber) {
     if (playerIndex < 0 || playerIndex >= static_cast<int>(players.size()))
     {
         return false;
@@ -375,7 +366,7 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
         case DIRECT_TRANSACTION:
             return HandleShiftDirectTransactionToken(playerIndex, targetPlayerIndex);
         case PRIME_SABACC:
-            return HandleShiftPrimeSabaccToken(playerIndex);
+            return HandleShiftPrimeSabaccToken(playerIndex, newSabbacNumber);
         default:
             return false;
     }

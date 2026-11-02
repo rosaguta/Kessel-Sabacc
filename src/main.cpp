@@ -67,6 +67,15 @@ bool GetPlayerCardDecision(Game game, Dealer &dealer) {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     return choice == 'y';
 }
+int GetPlayerSabaccNumberDecision() {
+    int choice = 0;
+    while (choice <= 0 || choice >= 7) {
+        std::cout << "\nWhat is the new sabbac number? (1-6): ";
+        std::cin >> choice;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    return choice;
+}
 PlayerAction GetTerminalInput(Game game, Dealer &dealer) {
     Player &player = dealer.players[game.activePlayerIndex];
     const int tokenMenuStart = 6;

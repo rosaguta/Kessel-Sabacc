@@ -19,6 +19,7 @@ struct PlayerAction {
     int roundNumber;
     int turnNumber;
     int targetPlayerIndex = -1;
+    int sabaccNumber = 1;
 };
 class Game {
     bool GameFinished = false;
