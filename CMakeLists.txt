@@ -15,3 +15,18 @@ add_executable(Kessel_Sabacc
 target_include_directories(Kessel_Sabacc PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+enable_testing()
+
+add_executable(ShiftTokenTests
+        tests/ShiftTokenTests.cpp
+        src/Dealer.cpp
+        src/Player.cpp
+        src/Game.cpp
+)
+
+target_include_directories(ShiftTokenTests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+add_test(NAME ShiftTokenTests COMMAND ShiftTokenTests)
