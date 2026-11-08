@@ -33,12 +33,26 @@ void Dealer::HandleShiftFreeDrawToken(int playerIndex) {
     players[playerIndex].CanDrawForFree = true;
 }
 
-void Dealer::HandleShiftRefundToken(int playerIndex) {
+bool Dealer::HandleShiftRefundToken(int playerIndex) {
+    if (players[playerIndex].usedChips < 1 || players[playerIndex].immune) {
+        return false;
+    }
+    players[playerIndex].usedChips -= 2;
     players[playerIndex].chips += 2;
+    if (players[playerIndex].usedChips < 0)
+        players[playerIndex].usedChips = 0;
+    return true;
 }
 
-void Dealer::HandleShiftExtraRefundToken(int playerIndex) {
+bool Dealer::HandleShiftExtraRefundToken(int playerIndex) {
+    if (players[playerIndex].usedChips < 1 || players[playerIndex].immune) {
+        return false;
+    }
+    players[playerIndex].usedChips -= 3;
     players[playerIndex].chips += 3;
+    if (players[playerIndex].usedChips < 0)
+        players[playerIndex].usedChips = 0;
+    return true;
 }
 
 void Dealer::HandleShiftGeneralTariffToken(int playerIndex) {
@@ -46,7 +60,7 @@ void Dealer::HandleShiftGeneralTariffToken(int playerIndex) {
     {
         if (i != playerIndex && !players[i].immune)
         {
-            players[i].chips = std::max(0, players[i].chips - 1);
+            players[i].SpendChips();
         }
     }
 }
@@ -82,7 +96,8 @@ bool Dealer::HandleShiftGeneralAuditToken(int playerIndex) {
     {
         if (i != playerIndex && players[i].stoodThisTurn && !players[i].immune)
         {
-            players[i].chips = std::max(0, players[i].chips - 2);
+            players[i].SpendChips();
+            players[i].SpendChips();
         }
     }
     return true;
@@ -96,7 +111,9 @@ bool Dealer::HandleShiftTargetAuditToken(int playerIndex, int targetPlayerIndex)
     }
     if (!target.immune)
     {
-        target.chips = std::max(0, target.chips - 3);
+        target.SpendChips();
+        target.SpendChips();
+        target.SpendChips();
     }
     return true;
 }
@@ -109,9 +126,9 @@ bool Dealer::HandleShiftMajorFraudToken() {
 void Dealer::HandleShiftEmbezzlementToken(int playerIndex) {
     for (int i = 0; i < static_cast<int>(players.size()); i++)
     {
-        if (i != playerIndex && !players[i].immune && players[i].chips > 0) {
-            players[i].chips--;
-            players[playerIndex].chips++;
+        if (i != playerIndex && !players[i].immune && players[i].usedChips > 0) {
+            players[i].usedChips--;
+            players[playerIndex].usedChips++;
         }
     }
 }
@@ -336,11 +353,11 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
             return true;
             break;
         case REFUND:
-            HandleShiftRefundToken(playerIndex);
-            return true;
+            return HandleShiftRefundToken(playerIndex);
+            break;
         case EXTRA_REFUND:
-            HandleShiftExtraRefundToken(playerIndex);
-            return true;
+            return HandleShiftExtraRefundToken(playerIndex);
+            break;
         case GENERAL_TARIFF:
             HandleShiftGeneralTariffToken(playerIndex);
             return true;

@@ -17,8 +17,8 @@ private:
     );
 
     void HandleShiftFreeDrawToken(int playerIndex); // Avoid the draw fee this turn
-    void HandleShiftRefundToken(int playerIndex); // Retrieve 2 chips in play
-    void HandleShiftExtraRefundToken(int playerIndex); // Retrieve 3 chips in play
+    bool HandleShiftRefundToken(int playerIndex); // Retrieve 2 chips in play
+    bool HandleShiftExtraRefundToken(int playerIndex); // Retrieve 3 chips in play
     void HandleShiftGeneralTariffToken(int playerIndex); // Other players are taxed one chip
     void HandleShiftTargetTariffToken(int playerIndex, int targetPlayerIndex); // Target player is taxed 2 chips
     bool HandleShiftEmbargoToken(int playerIndex, int targetPlayerIndex); // Next player must stand
