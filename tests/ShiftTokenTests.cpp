@@ -290,7 +290,7 @@ int main() {
     }
     {
         Game g; Dealer d = makeDealer(2);
-        CHECK(use(g, d, 0, PRIME_SABACC, -1, 9) == false, "out-of-range sabacc value (9) rejected");
+        CHECK(use(g, d, 0, PRIME_SABACC, -1, 7) == false, "out-of-range sabacc value (7) rejected");
         Game g2; Dealer d2 = makeDealer(2);
         CHECK(use(g2, d2, 0, PRIME_SABACC, -1, 0) == false, "out-of-range sabacc value (0) rejected");
     }
