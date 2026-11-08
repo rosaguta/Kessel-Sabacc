@@ -157,8 +157,11 @@ bool Dealer::HandleShiftDirectTransactionToken(int playerIndex, int targetPlayer
     players[targetPlayerIndex].EvaluateMatchingPair();
     return true;
 }
-bool Dealer::HandleShiftPrimeSabaccToken(int playerIndex, int newSabbacNumber) {
-    (void)playerIndex;
+bool Dealer::HandleShiftPrimeSabaccToken(int newSabbacNumber) {
+    if (newSabbacNumber < 1 || newSabbacNumber > 6)
+    {
+        return false;
+    }
     sabacc = newSabbacNumber;
     primeSabaccActive = true;
     return true;
@@ -366,7 +369,7 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
         case DIRECT_TRANSACTION:
             return HandleShiftDirectTransactionToken(playerIndex, targetPlayerIndex);
         case PRIME_SABACC:
-            return HandleShiftPrimeSabaccToken(playerIndex, newSabbacNumber);
+            return HandleShiftPrimeSabaccToken(newSabbacNumber);
         default:
             return false;
     }

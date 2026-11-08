@@ -31,7 +31,7 @@ private:
     bool HandleShiftCookTheBooksToken(); // Inverts Sabacc ranks until the next reveal (6/6 Sabacc is the best until next reveal)
     bool HandleShiftExhaustionToken(int playerIndex, int targetPlayerIndex); // Choose a player. They must discard and draw a new hand
     bool HandleShiftDirectTransactionToken(int playerIndex, int targetPlayerIndex); // Choose a player. Trade hands with them.
-    bool HandleShiftPrimeSabaccToken(int playerIndex, int newSabbacNumber); // Roll two dice. Pick one value as the new best sabacc
+    bool HandleShiftPrimeSabaccToken(int newSabbacNumber); // Roll two dice. Pick one value as the new best sabacc
 
 public:
     int currentPlayerTurn{};
