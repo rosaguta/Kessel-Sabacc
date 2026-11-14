@@ -231,7 +231,6 @@ bool Dealer::Reset() {
     return true;
 }
 
-//TODO: add return false when the cards couldnt be shuffled/dealt
 bool Dealer::DealCards() {
     for (Player& player : players)
     {
