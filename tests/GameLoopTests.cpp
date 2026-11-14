@@ -90,7 +90,8 @@ int main() {
     {
         // Winners refunded, losers taxed
         Game g; Dealer d = makeDealer(3);
-        setHand(d, 0, FOUR, THREE); setHand(d, 1, TWO, ONE); setHand(d, 2, SIX, ONE);
+        // p2 must stay above 0 chips, otherwise it is eliminated and removed from d.players
+        setHand(d, 0, FOUR, THREE); setHand(d, 1, TWO, ONE); setHand(d, 2, ONE, FIVE);
         for (auto &p : d.players) p.SpendChips(); // each 7 chips, 1 in pot
         g.ResolveEndOfRound(d);
         CHECK(d.players[0].chips == 8 && d.players[1].chips == 8, "both tied winners get their pot back");
@@ -144,6 +145,53 @@ int main() {
         }
         CHECK(wins == 50, "Impostor+3 always beats 1/5 (50/50 runs)");
         std::cout << "        actual: " << wins << "/50\n";
+    }
+
+    std::cout << "== GAME FINISHED (game ends when only one player has chips left)\n";
+    {
+        Game g;
+        CHECK(!g.IsGameOver(), "fresh game is not over");
+    }
+    {
+        // Nobody runs out of chips -> game continues into the next round
+        Game g; Dealer d = makeDealer(3);
+        setHand(d, 0, ONE, TWO); setHand(d, 1, ONE, FOUR); setHand(d, 2, TWO, SIX);
+        g.ResolveEndOfRound(d);
+        CHECK(!g.IsGameOver(), "no player at 0 chips -> game not over");
+        CHECK(d.players.size() == 3, "all 3 players still in the game");
+        CHECK(g.currentRound == 2, "game advances to round 2");
+        std::cout << "        actual: players=" << d.players.size() << " round=" << g.currentRound << "\n";
+    }
+    {
+        // One of three players is knocked out -> two remain, game continues
+        Game g; Dealer d = makeDealer(3);
+        setHand(d, 0, ONE, TWO); setHand(d, 1, TWO, THREE); setHand(d, 2, SIX, ONE);
+        d.players[2].chips = 1; // penalty pushes p2 to 0 or below
+        g.ResolveEndOfRound(d);
+        CHECK(!g.IsGameOver(), "one of three players eliminated -> game not over");
+        CHECK(d.players.size() == 2, "eliminated player is removed");
+        std::cout << "        actual: players=" << d.players.size() << "\n";
+    }
+    {
+        // Two players, loser runs out of chips -> game over
+        Game g; Dealer d = makeDealer(2);
+        setHand(d, 0, ONE, TWO); setHand(d, 1, SIX, ONE);
+        d.players[1].chips = 1;
+        g.ResolveEndOfRound(d);
+        CHECK(g.IsGameOver(), "last opponent eliminated -> game over");
+        CHECK(d.players.size() == 1, "only the winner remains");
+        CHECK(g.currentRound == 1, "round does not advance once the game is over");
+        std::cout << "        actual: players=" << d.players.size() << " round=" << g.currentRound << "\n";
+    }
+    {
+        // Two adjacent players knocked out in the same round -> game over
+        Game g; Dealer d = makeDealer(3);
+        setHand(d, 0, ONE, TWO); setHand(d, 1, SIX, ONE); setHand(d, 2, SIX, TWO);
+        d.players[1].chips = 1; d.players[2].chips = 1;
+        g.ResolveEndOfRound(d);
+        CHECK(d.players.size() == 1, "both broke players are removed in the same round");
+        CHECK(g.IsGameOver(), "two players eliminated at once -> game over");
+        std::cout << "        actual: players=" << d.players.size() << "\n";
     }
 
     std::cout << "\n" << passed << " passed, " << failed << " failed\n";
