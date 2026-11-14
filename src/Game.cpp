@@ -60,6 +60,20 @@ bool Game::ApplyAction(const PlayerAction &action, Dealer &dealer) {
 
 RoundResult Game::ResolveEndOfRound(Dealer &dealer) {
     RoundResult result = EvaluateRound(dealer);
+    std::vector<int> playersToRemove;
+    for (int i = 0; i < static_cast<int>(dealer.players.size()); i++)
+    {
+        if (dealer.players[i].chips <= 0) {
+            playersToRemove.push_back(i);
+        }
+    }
+    for (int i = playersToRemove.size() - 1; i >= 0; i--) {
+        dealer.RemovePlayer(playersToRemove[i]);
+    }
+    if (dealer.players.size() == 1) {
+        GameFinished = true;
+        return result;
+    }
     currentRound++;
     currentTurn = 1;
     activePlayerIndex = 0;
@@ -283,7 +297,7 @@ int Game::RollDice() {
 }
 
 bool Game::IsGameOver() const {
-    return false;
+    return GameFinished;
 }
 
 bool Game::Prepare(Dealer* dealer) {
