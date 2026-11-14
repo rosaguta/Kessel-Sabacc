@@ -72,7 +72,8 @@ void Player::RefundChips() {
     usedChips = 0;
 }
 void Player::TaxChips() {
-    chips = chips - usedChips;
+    int extraPenaltyAmount = bloodCard.number;
+    chips = chips - usedChips - extraPenaltyAmount;
     usedChips = 0;
 }
 
@@ -96,12 +97,12 @@ NumberCard Player::SwapInHandCardToMainHand() {
     NumberCard swappedCard = {};
     switch (cardInHand.cardFamily) {
         case BLOOD:
-            std::swap(bloodCard, cardInHand);
             swappedCard = bloodCard;
+            std::swap(bloodCard, cardInHand);
             break;
         case SAND:
-            std::swap(sandCard, cardInHand);
             swappedCard = sandCard;
+            std::swap(sandCard, cardInHand);
             break;
     }
     return swappedCard;
