@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <map>
+
 #include "Dealer.h"
 #include "Player.h"
 
@@ -148,32 +150,26 @@ RoundResult Game::ResolveMatchingPairWinner(Dealer &dealer)
 RoundResult Game::ResolveNonMatchingPairWinner(Dealer &dealer)
 {
     RoundResult result;
-    int lowestDifference = std::numeric_limits<int>::max();
+    const int playerCount = static_cast<int>(dealer.players.size());
 
-    for (int i = 0; i < static_cast<int>(dealer.players.size()); ++i)
-    {
-        const auto& player = dealer.players[i];
+      std::vector<int> differences(playerCount);
+      int lowestDifference = std::numeric_limits<int>::max();
+      for (int i = 0; i < playerCount; ++i)
+      {
+          const auto& player = dealer.players[i];
+          differences[i] = std::abs(player.bloodCard.number - player.sandCard.number);
+          lowestDifference = std::min(lowestDifference, differences[i]);
+      }
 
-        int bloodValue = player.bloodCard.number;
-        int sandValue = player.sandCard.number;
+      for (int i = 0; i < playerCount; ++i)
+      {
+          if (differences[i] == lowestDifference)
+              result.winners.push_back(i);
+          else
+              result.losers.push_back(i);
+      }
 
-        int difference = std::abs(bloodValue - sandValue);
-
-        if (difference < lowestDifference)
-        {
-            lowestDifference = difference;
-            result.winners.clear();
-            result.winners.push_back(i);
-        }
-        else if (difference == lowestDifference)
-        {
-            result.winners.push_back(i);
-        }else if (difference > lowestDifference){
-            result.losers.push_back(i);
-        }
-    }
-
-    return result;
+      return result;
 }
 void Game::ResolveImpostorCards(Dealer& dealer)
 {
@@ -282,7 +278,7 @@ RoundResult Game::EvaluateRound(Dealer &dealer) {
 int Game::RollDice() {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> distr(-6 , -1); // can change to min 1 and max 6, minuses are used for debugging
+    std::uniform_int_distribution<> distr(1 , 6); // can change to min 1 and max 6, minuses are used for debugging
     return distr(gen);
 }
 
