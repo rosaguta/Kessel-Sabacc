@@ -45,6 +45,7 @@ int main() {
     std::cout << "== Generic token flow\n";
     {
         Game g; Dealer d = makeDealer(2);
+        d.players[0].SpendChips(); d.players[0].SpendChips(); d.players[0].SpendChips(); d.players[0].SpendChips(); // spend chips so the refund tokens can be used
         CHECK(use(g, d, 0, REFUND) == true, "owned token can be used");
         CHECK(std::count(d.players[0].shiftTokens.begin(), d.players[0].shiftTokens.end(), REFUND) == 0, "used token removed from hand");
         CHECK(d.players[0].usedShiftTokens.size() == 1, "used token recorded in usedShiftTokens");
