@@ -30,3 +30,16 @@ target_include_directories(ShiftTokenTests PRIVATE
 )
 
 add_test(NAME ShiftTokenTests COMMAND ShiftTokenTests)
+
+add_executable(GameLoopTests
+        tests/GameLoopTests.cpp
+        src/Dealer.cpp
+        src/Player.cpp
+        src/Game.cpp
+)
+
+target_include_directories(GameLoopTests PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+add_test(NAME GameLoopTests COMMAND GameLoopTests)
