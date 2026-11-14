@@ -37,10 +37,12 @@ bool Dealer::HandleShiftRefundToken(int playerIndex) {
     if (players[playerIndex].usedChips < 1 || players[playerIndex].immune) {
         return false;
     }
-    players[playerIndex].usedChips -= 2;
-    players[playerIndex].chips += 2;
-    if (players[playerIndex].usedChips < 0)
-        players[playerIndex].usedChips = 0;
+    int chipsToReturn = 2;
+    if (players[playerIndex].usedChips == 1) {
+        chipsToReturn = 1;
+    }
+    players[playerIndex].usedChips -= chipsToReturn;
+    players[playerIndex].chips += chipsToReturn;
     return true;
 }
 
@@ -48,10 +50,12 @@ bool Dealer::HandleShiftExtraRefundToken(int playerIndex) {
     if (players[playerIndex].usedChips < 1 || players[playerIndex].immune) {
         return false;
     }
-    players[playerIndex].usedChips -= 3;
-    players[playerIndex].chips += 3;
-    if (players[playerIndex].usedChips < 0)
-        players[playerIndex].usedChips = 0;
+    int chipsToReturn = 3;
+    if (players[playerIndex].usedChips < 3) {
+        chipsToReturn = players[playerIndex].usedChips;
+    }
+    players[playerIndex].usedChips -= chipsToReturn;
+    players[playerIndex].chips += chipsToReturn;
     return true;
 }
 
@@ -351,13 +355,10 @@ bool Dealer::HandleShiftToken(int playerIndex, ShiftToken shift_token, int targe
         case FREE_DRAW:
             HandleShiftFreeDrawToken(playerIndex);
             return true;
-            break;
         case REFUND:
             return HandleShiftRefundToken(playerIndex);
-            break;
         case EXTRA_REFUND:
             return HandleShiftExtraRefundToken(playerIndex);
-            break;
         case GENERAL_TARIFF:
             HandleShiftGeneralTariffToken(playerIndex);
             return true;
